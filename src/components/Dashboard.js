@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../contexts/AuthContexts";
 import { useNavigate } from "react-router-dom";
-import { db } from "../firebase";
+import { db, storage } from "../firebase";
 import Profile from "./dashboard/profile";
 import FileUpload from "./dashboard/FileUpload";
 import UploadedFilesSection from "./dashboard/UploadedFilesSection";
 import { Modal, Button } from 'react-bootstrap';
 import "../styles/dashboard.css";
+import ProfileDrawer from "./dashboard/profileDrawer";
 
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
@@ -18,8 +19,13 @@ export default function Dashboard() {
   const [commentError, setCommentError] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [fileComments, setFileComments] = useState([]);
+  const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   const { currentUser, logout } = useAuth();
   const history = useNavigate();
+
+  const toggleProfileDrawer = () => {
+    setProfileDrawerOpen(!profileDrawerOpen); // Toggle the state
+  };
 
   useEffect(() => {
     const fetchFiles = () => {
@@ -118,7 +124,7 @@ export default function Dashboard() {
 
   const filteredFiles = fileData.filter(
     (file) =>
-      file.createdBy !== currentUser.uid &&
+      file.createdBy !== (currentUser && currentUser.uid) &&
       file.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -153,7 +159,7 @@ export default function Dashboard() {
       setLoading(true);
       await db.ref(`files/${fileId}/comments`).push({
         text: comment,
-        userEmail: currentUser.email,
+        userEmail: (currentUser && currentUser.email) || "Unknown",
         createdAt: new Date().toISOString(),
       });
       setComment("");
@@ -183,25 +189,63 @@ export default function Dashboard() {
     }
   };
 
+  // Function to handle file upload
+  const handleFileUpload = async (file) => {
+    const storageRef = storage.ref();
+    const fileRef = storageRef.child(file.name);
+    try {
+      setLoading(true);
+      await fileRef.put(file);
+      const fileURL = await fileRef.getDownloadURL();
+      await db.ref("files").push({
+        title: file.name,
+        coverPageURL: fileURL,
+        uploaderEmail: (currentUser && currentUser.email) || "Unknown",
+        createdBy: (currentUser && currentUser.uid) || "Unknown",
+        createdAt: new Date().toISOString(),
+        views: 0,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container-fluid">
+      <div className="profile-icon" onClick={toggleProfileDrawer}>
+        <ion-icon name="person" size="large"></ion-icon>
+      </div>
+
+      {/* Profile drawer */}
+      <ProfileDrawer isOpen={profileDrawerOpen} onClose={toggleProfileDrawer} currentUser={currentUser} setLoading={setLoading} />
+
+
       <div className="dashboard-container">
         <div className="left-section">
-          <Profile />
-          <FileUpload currentUser={currentUser} />
+          {/* <Profile />
+          <FileUpload currentUser={currentUser} onFileUpload={handleFileUpload} /> */}
         </div>
+
+
+
         <div className="right-section">
-          <h2 className="text-center mb-4" style={{ color: "black" }}>Uploaded Files by Others</h2>
-          <input
-            type="text"
-            placeholder="Search by title..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-            className="form-control mb-3"
-          />
+          <h2 className="text-center mb-4" style={{ color: "white" }}>Uploaded Files by Others</h2>
+          <div className="row">
+            <input
+              type="text"
+              placeholder="Search by title..."
+              value={searchQuery}
+              onChange={handleSearchChange}
+              className="form-control mb-3"
+              id="searchbar"
+            />
+            <ion-icon name="search" className="icon"></ion-icon>
+          </div>
           <div className="row">
             {filteredFiles.map((file) => (
-              <div key={file.id} className="col-md-4 mb-4">
+              <div key={file.id} className="mb-4" style={{ width: "240px" }}>
                 <div className="card">
                   <img
                     src={file.coverPageURL}
@@ -247,7 +291,7 @@ export default function Dashboard() {
               <div key={index}>
                 <p>{comment.text}</p>
                 <small>By: {comment.userEmail}</small>
-                {comment.userEmail === currentUser.email && (
+                {comment.userEmail === (currentUser && currentUser.email) && (
                   <Button onClick={() => handleDeleteComment(comment.id)}>Delete</Button>
                 )}
               </div>

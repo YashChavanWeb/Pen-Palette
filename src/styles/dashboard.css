@@ -1,10 +1,6 @@
-/* dashboard.css */
-
-/* Add background color and other styles to match login page */
 .container-fluid {
   background-color: #1c0831; /* Match the background color of the login page */
-  color: white; /* Text color */
-  padding: 20px; /* Add padding for better spacing */
+  padding: 20px; 
 }
 
 .dashboard-container {
@@ -17,15 +13,13 @@
 .right-section,
 .center-section {
   flex: 1;
-  margin: 0 10px; /* Add margin for spacing between sections */
+  margin: 0 10px;
 }
 
 .left-section,
 .right-section {
-  padding: 20px; /* Add padding for content within sections */
+  padding: 20px;
 }
-
-/* Add styles for the cards */
 .card {
   background-color: #1c0831; /* Match the background color of the login card */
   border: 2px solid #52297a; /* Border color */
@@ -94,4 +88,58 @@
 .linktext {
   text-decoration: none; /* Remove underline */
   color: #b46aff; /* Link color */
+}
+
+.profile-icon, .icon {
+  color: white;
+}
+
+#searchbar{
+  border-radius: 25px;
+}
+
+
+.card {
+  background-color: #1c0831;
+  border: 2px solid #52297a;
+  border-radius: 25px;
+  box-shadow: 0 0 20px 2px #7f39c5;
+  transition: 0.3s ease-in-out;
+  color: white;
+  margin-bottom: 20px;
+  width: 100%; /* Make the card take the entire width */
+}
+
+.card:hover {
+  box-shadow: 0 0 20px 5px #7f39c5;
+}
+
+.card-img-top {
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  cursor: pointer;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.card-text {
+  font-size: 1rem;
+}
+
+/* Add a class for files uploaded by others */
+.others-file-card {
+  display: flex;
+  justify-content: center;
+}
+
+/* Adjust the width of the file card content */
+.others-file-card .card-body {
+  width: 80%; /* Adjust as needed */
 }
