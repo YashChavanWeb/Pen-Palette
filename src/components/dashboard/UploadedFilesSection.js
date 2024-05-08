@@ -145,16 +145,16 @@ export default function UploadedFilesSection({ currentUser }) {
 
     return (
         <div className="center-section">
-            <h2 className="text-center mb-4" style={{ color: "black" }}>Your Uploaded Files</h2>
+            <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Files</h2>
             <div className="row flex-nowrap overflow-auto">
                 {fileData.map((file) => (
-                    <div key={file.id} className="col-md-4 mb-4">
-                        <div className="card">
+                    <div key={file.id} className="col-md-4 mb-4 mt-4">
+                        <div className="cardbitch">
                             <img
                                 src={file.coverPageURL}
                                 alt="Cover Page"
                                 className="card-img-top"
-                                style={{ height: "250px", cursor: "pointer" }}
+                                style={{ height: "300px", cursor: "pointer", borderRadius: "10px" }}
                                 onClick={() => openFile(file.id, file.fileURL, file.createdBy)}
                             />
                             <div className="card-body">
@@ -166,13 +166,14 @@ export default function UploadedFilesSection({ currentUser }) {
                                         <p className="card-text">Likes: {file.likes}</p> {/* Display like count */}
                                     </>
                                 )}
-                                <Button variant="primary" onClick={() => handleEdit(file)} disabled={loading}>
+
+                                <Button variant="primary" onClick={() => handleEdit(file)} disabled={loading} className="bttn">
                                     Edit
                                 </Button>{" "}
-                                <Button variant="danger" onClick={() => handleConfirmDelete(file.id)} disabled={loading}>
+                                <Button variant="danger" onClick={() => handleConfirmDelete(file.id)} disabled={loading} className="bttn">
                                     {loading ? <Spinner animation="border" size="sm" /> : "Delete"}
                                 </Button>
-                                <Button variant="info" onClick={() => openFile(file.id, file.fileURL, file.createdBy)}>
+                                <Button variant="info" onClick={() => openFile(file.id, file.fileURL, file.createdBy)} className="bttn">
                                     Comments
                                 </Button>
                             </div>

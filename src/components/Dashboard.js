@@ -8,6 +8,7 @@ import UploadedFilesSection from "./dashboard/UploadedFilesSection";
 import { Modal, Button } from 'react-bootstrap';
 import "../styles/dashboard.css";
 import ProfileDrawer from "./dashboard/profileDrawer";
+import "../styles/modal.css";
 
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
@@ -214,24 +215,21 @@ export default function Dashboard() {
 
   return (
     <div className="container-fluid">
-      <div className="profile-icon" onClick={toggleProfileDrawer}>
-        <ion-icon name="person" size="large"></ion-icon>
-      </div>
+      <header>
+        <div className="profile-icon" onClick={toggleProfileDrawer}>
+          <ion-icon name="person-circle" size="large"></ion-icon>
+        </div>
+      </header>
+
 
       {/* Profile drawer */}
       <ProfileDrawer isOpen={profileDrawerOpen} onClose={toggleProfileDrawer} currentUser={currentUser} setLoading={setLoading} />
 
 
       <div className="dashboard-container">
-        <div className="left-section">
-          {/* <Profile />
-          <FileUpload currentUser={currentUser} onFileUpload={handleFileUpload} /> */}
-        </div>
-
-
 
         <div className="right-section">
-          <h2 className="text-center mb-4" style={{ color: "white" }}>Uploaded Files by Others</h2>
+          <h2 className="text-center mb-4" style={{ color: "white" }}>Explore more Stories</h2>
           <div className="row">
             <input
               type="text"
@@ -241,17 +239,17 @@ export default function Dashboard() {
               className="form-control mb-3"
               id="searchbar"
             />
-            <ion-icon name="search" className="icon"></ion-icon>
+
           </div>
           <div className="row">
             {filteredFiles.map((file) => (
-              <div key={file.id} className="mb-4" style={{ width: "240px" }}>
-                <div className="card">
+              <div key={file.id} className="mb-4" style={{ width: "33%" }}>
+                <div className="cardbitch">
                   <img
                     src={file.coverPageURL}
                     alt="Cover Page"
                     className="card-img-top"
-                    style={{ height: "250px", cursor: "pointer" }}
+                    style={{ height: "300px", cursor: "pointer", borderRadius: "10px" }}
                     onClick={() => openFile(file.id)}
                   />
                   <div className="card-body">

@@ -1,9 +1,7 @@
-// Profile.js
-
 import React, { useState } from "react";
-import { Card, Alert, Button, Spinner } from "react-bootstrap";
 import { useAuth } from "../../contexts/AuthContexts";
 import { Link, useNavigate } from "react-router-dom";
+import "../../styles/modal.css";
 
 export default function Profile() {
     const [error, setError] = useState("");
@@ -23,25 +21,27 @@ export default function Profile() {
 
     return (
         <>
-            <h2 className="text-center" style={{ color: "black" }}>
+            <h2 className="text-center" style={{ color: "white" }}>
                 Profile
             </h2>
-            <Card>
-                <Card.Body>
-                    {error && <Alert variant="danger">{error}</Alert>}
-                    <p>
-                        <strong>Email:</strong> {currentUser.email}
-                    </p>
-                    <Link to="/update-profile" className="btn btn-primary btn-block mt-3">
+            {/* <div className="card"> */}
+            <div className="card-body">
+                {error && <div className="alert alert-danger">{error}</div>}
+                <p>
+                    <strong>Email:</strong> {currentUser.email}
+                </p>
+                {/* <button className="bttn">
+                    <Link to="/update-profile" style={{ textDecoration: "none", color: "black" }}>
                         Update Profile
-                    </Link>
-                    <div className="w-100 text-center mt-2">
-                        <Button variant="link" onClick={handleLogout}>
-                            Log Out
-                        </Button>
-                    </div>
-                </Card.Body>
-            </Card>
+                    </Link> 
+            </button> */}
+                <div className="w-100 text-center mt-2">
+                    <button className="button" onClick={handleLogout}>
+                        Log Out
+                    </button>
+                </div>
+            </div >
+            {/* </div> */}
         </>
     );
 }

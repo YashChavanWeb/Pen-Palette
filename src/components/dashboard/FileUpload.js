@@ -1,14 +1,14 @@
 import React, { useState } from "react";
-import { Card, Button, Spinner, Modal } from "react-bootstrap";
 import { storage, db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import "../../styles/modal.css";
 
 export default function FileUpload({ currentUser }) {
     const [error, setError] = useState("");
     const [file, setFile] = useState(null);
     const [coverPage, setCoverPage] = useState(null);
     const [title, setTitle] = useState("");
-    const [description, setDescription] = useState(""); // New state for description
+    const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
@@ -102,38 +102,45 @@ export default function FileUpload({ currentUser }) {
     };
 
     return (
-        <Card className="mb-3">
-            <h2 className="text-center mb-4" style={{ color: "black" }}>File Upload</h2>
-            <Card.Body>
+        <div className="file-upload-container mb-3">
+            <h2 className="text-center mb-4">File Upload</h2>
+            <div className="card-body">
                 <input id="fileInput" type="file" className="form-control mb-2" onChange={handleFileChange} />
                 <input id="coverPageInput" type="file" className="form-control mb-2" onChange={handleCoverPageChange} />
                 <input type="text" className="form-control mb-2" placeholder="Title" value={title} onChange={handleTitleChange} />
                 <textarea className="form-control mb-2" placeholder="Description" value={description} onChange={handleDescriptionChange} />
                 {error && <p className="text-danger">{error}</p>}
-                <Button onClick={handlePublish} className="btn btn-success btn-block" disabled={loading}>
-                    {loading ? <Spinner animation="border" size="sm" /> : "Publish"}
-                </Button>
-                <Button onClick={handleNext} className="btn btn-primary btn-block mt-2" disabled={loading}>
+                <button onClick={handlePublish} className="bttn btn-success btn-block " disabled={loading}>
+                    {loading ? <div className="spinner-border spinner-border-sm" role="status"></div> : "Publish"}
+                </button>
+                <button onClick={handleNext} className="bttn" disabled={loading}>
                     Next
-                </Button>
-                <Button onClick={handleCancel} className="btn btn-danger btn-block mt-2">
+                </button>
+                <button onClick={handleCancel} className="bttn">
                     Cancel
-                </Button>
-            </Card.Body>
+                </button>
+            </div>
 
-            <Modal show={showSuccessModal} onHide={() => setShowSuccessModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>File Uploaded Successfully!</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Your file has been successfully uploaded.
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowSuccessModal(false)}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </Card>
+            {showSuccessModal && (
+                <div className="modal" style={{ display: "block", width: "100vw", backgroundColor: "rgba(0, 0, 0, 0.5)", color: "black" }}>
+                    <div className="modal-content" style={{ backgroundColor: "white", margin: "15% auto", padding: "20px", border: "1px solid #888", width: "50%" }}>
+                        <div className="modal-header">
+                            <ion-icon name="happy-outline" size="large"></ion-icon>
+                            <h5 className="modal-title">File Uploaded Successfully!</h5>
+                            <button type="button" className="close" style={{ border: "none", backgroundColor: "transparent" }} onClick={() => setShowSuccessModal(false)}>
+                                <ion-icon name="close-circle" size="large"></ion-icon>
+                            </button>
+                        </div>
+                        <div className="modal-body">
+                            Your file has been successfully uploaded.
+                        </div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-secondary" onClick={() => setShowSuccessModal(false)}>Close</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+        </div>
     );
 }

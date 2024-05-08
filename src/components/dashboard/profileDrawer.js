@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import Profile from "./profile";
 import FileUpload from "./FileUpload";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import "../../styles/profiledrawer.css";
+import "../../styles/profiledrawer.css"; // If you have custom styles for the profile drawer
 
 const ProfileDrawer = ({ isOpen, onClose, currentUser, fileData, setLoading }) => {
     const [showProfileModal, setShowProfileModal] = useState(false);
@@ -27,42 +25,56 @@ const ProfileDrawer = ({ isOpen, onClose, currentUser, fileData, setLoading }) =
 
     return (
         <div className={`profile-drawer ${isOpen ? "open" : ""}`}>
+
+            <button className="close-button" onClick={onClose}><ion-icon name="close-circle" size="large"></ion-icon></button>
+
             <div className="left-section">
-                <Button onClick={handleOpenProfileModal}>Profile</Button>
-                <Button onClick={handleOpenFileUploadModal}>Upload File</Button> {/* Added button to open file upload modal */}
+                <button onClick={handleOpenProfileModal} className="button">
+                    <ion-icon name="person" id="btnicon"></ion-icon> Profile
+                </button>
+                {/* Profile Modal */}
+                {showProfileModal && (
+                    <div className="overlay" onClick={handleCloseProfileModal}>
+                        <div className="modal-container slide-down">
+                            <div className="modal-content">
+                                <div className="modal-body">
+                                    <Profile />
+                                </div>
+                                <div className="modal-footer">
+                                    <button onClick={handleCloseProfileModal} type="button" className="close-button">
+                                        Close
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <button onClick={handleOpenFileUploadModal} className="button">
+                    <ion-icon name="images" id="btnicon"></ion-icon>  Upload File
+                </button> {/* Added button to open file upload modal */}
+
+                {/* File Upload Modal */}
+                {showFileUploadModal && (
+                    <div className="file-upload-modal">
+                        <div className="overlay">
+                            <div className="modal-container slide-down">
+                                <div className="modal-content">
+                                    <div className="modal-body">
+                                        <FileUpload currentUser={currentUser} setLoading={setLoading} />
+                                    </div>
+                                    <div className="modal-footer">
+                                        <button onClick={handleCloseFileUploadModal} type="button" className="button">
+                                            Close
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
             </div>
 
-            <button className="close-button" onClick={onClose}>Close</button>
 
-            {/* Profile Modal */}
-            <Modal show={showProfileModal} onHide={handleCloseProfileModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>User Profile</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Profile />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseProfileModal}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-
-            {/* File Upload Modal */}
-            <Modal show={showFileUploadModal} onHide={handleCloseFileUploadModal}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Upload File</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <FileUpload currentUser={currentUser} setLoading={setLoading} />
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseFileUploadModal}>
-                        Close
-                    </Button>
-                </Modal.Footer>
-            </Modal>
         </div>
     );
 };
