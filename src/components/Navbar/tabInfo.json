@@ -1,0 +1,20 @@
+// tabInfo.json
+
+{
+  "home": {
+    "title": "Home",
+    "content": "This is the home page. Welcome!"
+  },
+  "about": {
+    "title": "About",
+    "content": "This is the about page. Learn more about us."
+  },
+  "services": {
+    "title": "Services",
+    "content": "This is the services page. Explore our services."
+  },
+  "contact": {
+    "title": "Contact",
+    "content": "This is the contact page. Get in touch with us."
+  }
+}

@@ -1,5 +1,8 @@
+// LandingPage.js
+
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar/Navbar";
 import WAVES from 'vanta/src/vanta.waves';
 import { auth } from "../firebase"; // Import Firebase auth instance
 import "../styles/landingpage.css"; // Import the CSS file
@@ -55,19 +58,22 @@ function LandingPage() {
     };
 
     return (
-        <div className={`bg ${fadeIn ? 'fade-in' : ''}`} ref={vantaRef}>
-            <img src={logo} alt="Logo" className={`logo ${fadeIn ? 'fade-in-logo' : ''}`} />
-            <div className={`block ${fadeIn ? 'fade-in-block' : ''}`}>
-                <img src={book} alt="Book" className="book" />
-                <div>
-                    <h1 className="title">Welcome to Our Website!</h1>
-                    <p className="subtitle">Please log in or sign up to access our services.</p>
+        <div>
+            <Navbar />
+            <div className={`bg ${fadeIn ? 'fade-in' : ''}`} ref={vantaRef}>
+                <img src={logo} alt="Logo" className={`logo ${fadeIn ? 'fade-in-logo' : ''}`} />
+                <div className={`block ${fadeIn ? 'fade-in-block' : ''}`}>
+                    <img src={book} alt="Book" className="book" />
+                    <div>
+                        <h1 className="title">Welcome to Our Website!</h1>
+                        <p className="subtitle">Please log in or sign up to access our services.</p>
+                    </div>
                 </div>
-            </div>
-            <div className={`button-container ${fadeIn ? 'fade-in-button' : ''}`}>
-                <button className="buttonlp" onClick={handleGetStarted}>
-                    Get Started
-                </button>
+                <div className={`button-container ${fadeIn ? 'fade-in-button' : ''}`}>
+                    <button className="buttonlp" onClick={handleGetStarted}>
+                        Get Started
+                    </button>
+                </div>
             </div>
         </div>
     );
