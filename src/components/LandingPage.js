@@ -2,7 +2,6 @@
 
 import React, { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Navbar from "./Navbar/Navbar";
 import WAVES from 'vanta/src/vanta.waves';
 import { auth } from "../firebase"; // Import Firebase auth instance
 import "../styles/landingpage.css"; // Import the CSS file
@@ -59,7 +58,6 @@ function LandingPage() {
 
     return (
         <div>
-            <Navbar />
             <div className={`bg ${fadeIn ? 'fade-in' : ''}`} ref={vantaRef}>
                 <img src={logo} alt="Logo" className={`logo ${fadeIn ? 'fade-in-logo' : ''}`} />
                 <div className={`block ${fadeIn ? 'fade-in-block' : ''}`}>
