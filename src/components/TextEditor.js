@@ -2,25 +2,22 @@ import React, { useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
+import JoditEditor from 'jodit-react';
 import '../styles/TextEditor.css';
 
 function TextEditor() {
     const [chapterName, setChapterName] = useState('');
-    const [description, setDescription] = useState('');
     const [content, setContent] = useState('');
-    const [uploadedTitle, setUploadedTitle] = useState('');
-    const [uploadedDescription, setUploadedDescription] = useState('');
     const editorRef = useRef(null);
 
     const location = useLocation();
-    const history = useNavigate();
+    const navigate = useNavigate();
 
-    const coverPageURL = location.state?.coverPageURL;
     const uploadedFileTitle = location.state?.fileTitle;
     const uploadedFileDescription = location.state?.fileDescription;
 
     const goBack = () => {
-        history('/dashboard');
+        navigate('/dashboard');
     };
 
     const downloadPdf = () => {
@@ -51,62 +48,81 @@ function TextEditor() {
         });
     };
 
+    // Function to handle image upload
+    const handleImageUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const imgBase64 = e.target.result;
+            setContent((prevContent) => `${prevContent}<img src="${imgBase64}" alt="Uploaded Image" />`);
+        };
+        reader.readAsDataURL(file);
+    };
+
+    // Function to handle text file upload
+    const handleTextFileUpload = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const textContent = e.target.result;
+            setContent((prevContent) => `${prevContent}<pre>${textContent}</pre>`);
+        };
+        reader.readAsText(file);
+    };
+
+    // Jodit editor configuration with desired options
+    const editorConfig = {
+        readonly: false,
+        toolbarAdaptive: false,
+        buttons: [
+            'bold', 'italic', 'underline', '|',
+            'alignleft', 'aligncenter', 'alignright', '|',
+            'ul', 'ol', '|',
+            'brush', '|',
+            'undo', 'redo'
+        ],
+        height: 600
+    };
+
     return (
         <div className="text-editor-container">
             <div className="section go-back">
                 <button onClick={goBack}>Go Back</button>
             </div>
 
-            <div ref={editorRef} className="section editor-section" style={{ backgroundImage: coverPageURL ? `url(${coverPageURL})` : 'none' }}>
+            <div className="section uploaded-file-section">
+                <h2>Uploaded File Details</h2>
+                <p><strong>Title:</strong> {uploadedFileTitle}</p>
+                <p><strong>Description:</strong> {uploadedFileDescription}</p>
+            </div>
+
+            <div ref={editorRef} className="section editor-section">
                 <div className="editor-content">
-                    <h1>Text Editor</h1>
                     <input
                         type="text"
                         value={chapterName}
                         placeholder="Chapter Name"
                         onChange={(e) => setChapterName(e.target.value)}
+                        className="input-field"
                     />
                     <br />
-                    <textarea
-                        value={description}
-                        placeholder="Description"
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                    <br />
-                    <textarea
+                    <JoditEditor
                         value={content}
-                        placeholder="Type your content here..."
-                        onChange={(e) => setContent(e.target.value)}
+                        config={editorConfig}
+                        tabIndex={1}
+                        onBlur={(newContent) => setContent(newContent)}
+                        className="editor"
                     />
                 </div>
             </div>
-
-            {uploadedFileTitle && (
-                <div className="section uploaded-file-section">
-                    <h2>Uploaded File Details</h2>
-                    <p>Title: {uploadedFileTitle}</p>
-                    <p>Description: {uploadedFileDescription}</p>
-                </div>
-            )}
 
             <div className="section button-section">
                 <button className="publish-btn" onClick={downloadPdf}>Publish</button>
-                <div className="dropdown">
-                    <button className="dropbtn">Save</button>
-                    <div className="dropdown-content">
-                        <button>Save Draft</button>
-                        <button>Discard Changes</button>
-                    </div>
-                </div>
             </div>
 
-            <div className="section alignment-section">
-                <button>Align Left</button>
-                <button>Align Center</button>
-                <button>Align Right</button>
-                <button>Bold</button>
-                <button>Italic</button>
-                <button>Underline</button>
+            <div className="section upload-section">
+                <input type="file" accept="image/*" onChange={handleImageUpload} />
+                <input type="file" accept=".txt" onChange={handleTextFileUpload} />
             </div>
         </div>
     );
