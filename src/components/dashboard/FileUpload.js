@@ -5,7 +5,6 @@ import "../../styles/modal.css";
 
 export default function FileUpload({ currentUser }) {
     const [error, setError] = useState("");
-    // const [file, setFile] = useState(null); // Commented out file state
     const [coverPage, setCoverPage] = useState(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -13,12 +12,6 @@ export default function FileUpload({ currentUser }) {
     const [coverPagePreview, setCoverPagePreview] = useState(null);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
-
-    // const handleFileChange = (e) => {
-    //     const file = e.target.files[0];
-    //     setFile(file);
-    //     setError("");
-    // };
 
     const handleCoverPageChange = (e) => {
         const coverPage = e.target.files[0];
@@ -99,7 +92,6 @@ export default function FileUpload({ currentUser }) {
         setDescription("");
         setLoading(false);
         setCoverPagePreview(null);
-        setShowSuccessModal(false);
         document.getElementById("coverPageInput").value = "";
     };
 
@@ -107,12 +99,10 @@ export default function FileUpload({ currentUser }) {
         <div className="file-upload-container mb-3">
             <h2 className="text-center mb-4">File Upload</h2>
             <div className="card-body">
-                {/* <input id="fileInput" type="file" className="form-control mb-2" onChange={handleFileChange} /> */}
                 <input id="coverPageInput" type="file" accept="image/*" className="form-control mb-2" onChange={handleCoverPageChange} />
 
                 {coverPagePreview && (
                     <img src={coverPagePreview} alt="Cover Page Preview" className="cover-page-preview mb-2" style={{ width: '100px', height: '100px', border: '5px solid white', margin: '10px' }} />
-
                 )}
                 <input type="text" className="form-control mb-2" placeholder="Title" value={title} onChange={handleTitleChange} />
                 <textarea className="form-control mb-2" placeholder="Description" value={description} onChange={handleDescriptionChange} />
