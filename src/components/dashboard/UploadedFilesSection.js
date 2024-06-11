@@ -143,6 +143,38 @@ export default function UploadedFilesSection({ currentUser }) {
         setEditTitle(fileToEdit.title);
     };
 
+
+    function formatDate(dateString) {
+        const date = new Date(dateString);
+        const day = date.getDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        const year = date.getFullYear();
+        const suffix = getSuffix(day);
+        return `${day}${suffix} ${month} ${year}`;
+    }
+
+    function formatTime(timeString) {
+        const time = new Date(timeString);
+        let hours = time.getHours();
+        const minutes = time.getMinutes();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // Handle midnight
+        const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
+        return formattedTime;
+    }
+
+    function getSuffix(day) {
+        if (day > 3 && day < 21) return 'th';
+        switch (day % 10) {
+            case 1: return 'st';
+            case 2: return 'nd';
+            case 3: return 'rd';
+            default: return 'th';
+        }
+    }
+
+
     return (
         <div className="center-section">
             <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Files</h2>
@@ -159,8 +191,9 @@ export default function UploadedFilesSection({ currentUser }) {
                             />
                             <div className="card-body">
                                 <h5 className="card-title">{file.title}</h5>
-                                <p className="card-text">Uploaded: {file.createdAt}</p>
-                                <p className="card-text">Views: {file.views}</p> {/* Display views count */}
+                                <p className="card-text">Uploaded: {formatDate(file.createdAt)}</p>
+                                <p className="card-text">Views: {file.views}</p>
+
                                 {file.createdBy !== currentUser.uid && (
                                     <>
                                         <p className="card-text">Likes: {file.likes}</p> {/* Display like count */}

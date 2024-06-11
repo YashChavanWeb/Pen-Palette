@@ -5,24 +5,32 @@ import "../../styles/modal.css";
 
 export default function FileUpload({ currentUser }) {
     const [error, setError] = useState("");
-    const [file, setFile] = useState(null);
+    // const [file, setFile] = useState(null); // Commented out file state
     const [coverPage, setCoverPage] = useState(null);
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
+    const [coverPagePreview, setCoverPagePreview] = useState(null);
     const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
 
-    const handleFileChange = (e) => {
-        const file = e.target.files[0];
-        setFile(file);
-        setError("");
-    };
+    // const handleFileChange = (e) => {
+    //     const file = e.target.files[0];
+    //     setFile(file);
+    //     setError("");
+    // };
 
     const handleCoverPageChange = (e) => {
         const coverPage = e.target.files[0];
         setCoverPage(coverPage);
         setError("");
+
+        // Preview cover page image
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setCoverPagePreview(e.target.result);
+        };
+        reader.readAsDataURL(coverPage);
     };
 
     const handleTitleChange = (e) => {
@@ -40,24 +48,19 @@ export default function FileUpload({ currentUser }) {
         setLoading(true);
 
         try {
-            if (!file || !coverPage || !title) {
-                throw new Error("Please select a file, cover page, and provide a title.");
+            if (!coverPage || !title) {
+                throw new Error("Please select a cover page and provide a title.");
             }
-
-            const fileRef = storage.ref().child(file.name);
-            await fileRef.put(file);
 
             const coverPageRef = storage.ref().child(coverPage.name);
             await coverPageRef.put(coverPage);
 
-            const fileURL = await fileRef.getDownloadURL();
             const coverPageURL = await coverPageRef.getDownloadURL();
 
             const newFileKey = db.ref().child("files").push().key;
             await db.ref(`files/${newFileKey}`).set({
                 title,
                 description,
-                fileURL,
                 coverPageURL,
                 uploaderEmail: currentUser && currentUser.email,
                 createdBy: currentUser && currentUser.uid,
@@ -76,11 +79,11 @@ export default function FileUpload({ currentUser }) {
     };
 
     const handleNext = () => {
-        if (!file || !coverPage || !title) {
-            setError("Please select a file, cover page, and provide a title.");
+        if (!coverPage || !title) {
+            setError("Please select a cover page and provide a title.");
             return;
         }
-        navigate("/textEditor", {
+        navigate("/dashboard/textEditor", {
             state: {
                 coverPageURL: URL.createObjectURL(coverPage),
                 fileTitle: title,
@@ -91,13 +94,12 @@ export default function FileUpload({ currentUser }) {
 
     const handleCancel = () => {
         setError("");
-        setFile(null);
         setCoverPage(null);
         setTitle("");
         setDescription("");
         setLoading(false);
+        setCoverPagePreview(null);
         setShowSuccessModal(false);
-        document.getElementById("fileInput").value = "";
         document.getElementById("coverPageInput").value = "";
     };
 
@@ -105,8 +107,13 @@ export default function FileUpload({ currentUser }) {
         <div className="file-upload-container mb-3">
             <h2 className="text-center mb-4">File Upload</h2>
             <div className="card-body">
-                <input id="fileInput" type="file" className="form-control mb-2" onChange={handleFileChange} />
-                <input id="coverPageInput" type="file" className="form-control mb-2" onChange={handleCoverPageChange} />
+                {/* <input id="fileInput" type="file" className="form-control mb-2" onChange={handleFileChange} /> */}
+                <input id="coverPageInput" type="file" accept="image/*" className="form-control mb-2" onChange={handleCoverPageChange} />
+
+                {coverPagePreview && (
+                    <img src={coverPagePreview} alt="Cover Page Preview" className="cover-page-preview mb-2" style={{ width: '100px', height: '100px', border: '5px solid white', margin: '10px' }} />
+
+                )}
                 <input type="text" className="form-control mb-2" placeholder="Title" value={title} onChange={handleTitleChange} />
                 <textarea className="form-control mb-2" placeholder="Description" value={description} onChange={handleDescriptionChange} />
                 {error && <p className="text-danger">{error}</p>}

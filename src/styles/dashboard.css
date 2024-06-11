@@ -13,12 +13,14 @@
 .right-section,
 .center-section {
   flex: 1;
+  width: 100%;
   margin: 0 10px;
 }
 
 .right-section {
   padding: 20px;
 }
+
 .card {
   background-color: #1c0831; /* Match the background color of the login card */
   border: 2px solid #52297a; /* Border color */
@@ -94,6 +96,8 @@
   width: 30px;
 }
 
+
+
 #searchbar{
   border-radius: 25px;
 }
@@ -126,6 +130,8 @@
   width: 80%;
 }
 header{
+  display: flex;
+  justify-content: space-around;
   position: sticky;
   z-index: 999;
   top: 0;
@@ -152,3 +158,26 @@ header{
 .card:hover {
   box-shadow: 0 0 20px 5px #7f39c5;
 } */
+
+
+/* Add styles for the buttons */
+.book-button {
+  margin-top: 10px;
+  text-align: center;
+}
+
+.book-button button {
+  border-radius: 25px; /* Border radius */
+  padding: 10px 20px; /* Padding */
+  background-color: #7f39c5; /* Background color */
+  border: none; /* No border */
+  transition: background-color 0.3s ease-in-out; /* Smooth transition */
+  color: white; /* Text color */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Cursor pointer */
+  outline: none; /* Remove outline */
+}
+
+.book-button button:hover {
+  background-color: #b46aff; /* Darker background color on hover */
+}

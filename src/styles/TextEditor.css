@@ -9,38 +9,50 @@
 }
 
 .section {
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    width: 80%;
     padding: 20px;
     margin-bottom: 20px;
-    width: 80%;
     background-color: white;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }
 
-.go-back button {
+.title-section {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.title {
+    cursor: pointer;
+    color: black;
+    font-size: 24px;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.title:hover {
+    color: #007bff;
+}
+
+.go-back-button,
+.publish-button,
+.add-btn {
     background-color: #007bff;
     color: white;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
-.go-back button:hover {
+.go-back-button:hover,
+.publish-button:hover,
+.add-btn:hover {
     background-color: #0056b3;
-}
-
-.publish-btn {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-}
-
-.publish-btn:hover {
-    background-color: #0056b3;
+    transform: translateY(-2px);
+    position: sticky;
 }
 
 .editor-content {
@@ -61,19 +73,10 @@
 .editor {
     width: 100%;
     height: 600px; /* Increased height for larger text area */
-}
-
-.uploaded-file-section {
-    background-color: #f9f9f9;
-    padding: 20px;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    width: 100%;
-}
-
-.button-section {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
+    padding: 10px;
+    resize: vertical;
 }
 
 .upload-section {
@@ -86,4 +89,15 @@
 .upload-section input[type="file"] {
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+.button-section {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+    margin-bottom: 20px;
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1;
 }

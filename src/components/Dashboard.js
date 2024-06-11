@@ -9,6 +9,9 @@ import { Modal, Button } from 'react-bootstrap';
 import "../styles/dashboard.css";
 import ProfileDrawer from "./dashboard/profileDrawer";
 import "../styles/modal.css";
+import "../styles/card.css";
+import booktop from '../images/booktop.png';
+import bookside from '../images/bookside.png';
 
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
@@ -201,6 +204,7 @@ export default function Dashboard() {
       await db.ref("files").push({
         title: file.name,
         coverPageURL: fileURL,
+        description: "", // Set default description here if needed
         uploaderEmail: (currentUser && currentUser.email) || "Unknown",
         createdBy: (currentUser && currentUser.uid) || "Unknown",
         createdAt: new Date().toISOString(),
@@ -213,17 +217,35 @@ export default function Dashboard() {
     }
   };
 
+
+  // Add state for saving file
+  const [isSaved, setIsSaved] = useState(false);
+
+  // Function to toggle save state
+  const toggleSave = () => {
+    setIsSaved(!isSaved);
+  };
+
   return (
     <div className="container-fluid">
       <header>
         <div className="profile-icon" onClick={toggleProfileDrawer}>
           <ion-icon name="person-circle" size="large"></ion-icon>
         </div>
-      </header>
+        {/* Button to go to the uploaded files section */}
+        <div className="book-button" onClick={() => document.querySelector(".center-section").scrollIntoView({ behavior: 'smooth' })}>
+          <button>View Your Books</button>
+        </div>
+        {/* Button to go to the section of exploring more stories */}
+        <div className="book-button" onClick={() => document.querySelector(".right-section").scrollIntoView({ behavior: 'smooth' })}>
+          <button>Explore More Stories</button>
+        </div>
 
 
+      </header >
       {/* Profile drawer */}
-      <ProfileDrawer isOpen={profileDrawerOpen} onClose={toggleProfileDrawer} currentUser={currentUser} setLoading={setLoading} />
+      < ProfileDrawer isOpen={profileDrawerOpen} onClose={toggleProfileDrawer} currentUser={currentUser} setLoading={setLoading} />
+
 
 
       <div className="dashboard-container">
@@ -241,36 +263,51 @@ export default function Dashboard() {
             />
 
           </div>
+
           <div className="row">
             {filteredFiles.map((file) => (
               <div key={file.id} className="mb-4" style={{ width: "33%" }}>
-                <div className="cardbitch">
-                  <img
-                    src={file.coverPageURL}
-                    alt="Cover Page"
-                    className="card-img-top"
-                    style={{ height: "300px", cursor: "pointer", borderRadius: "10px" }}
-                    onClick={() => openFile(file.id)}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{file.title}</h5>
-                    <p className="card-text">Uploaded By: {file.uploaderEmail}</p>
-                    <p className="card-text">Uploaded: {formatDate(file.createdAt)}</p>
-                    <p className="card-text">Views: {file.views}</p>
+                <div className="layout" onClick={() => openFile(file.id)}>
+                  <div className="actions">
+                    <ion-icon name="bookmark"></ion-icon>
+                  </div>
+                  <div className="book-cover">
+                    <img className="book-top" src={booktop} alt="book-top" />
+                    <img
+                      src={file.coverPageURL}
+                      alt="Cover Page"
+                      className="card-img-top"
+                      style={{ height: "250px", cursor: "pointer", borderRadius: "10px" }}
+
+                    />
+                    <img className="book-side" src={bookside} alt="book-side" />
+                  </div>
+                  <div className="preface">
+                    <div className="title">{file.title}</div>
+                    <div className="author">{file.uploaderEmail}</div>
+                    <p>Views : {file.views}</p>
+                    <div className="body">
+                      <p>{file.description}</p>
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
-        <div className="center-section">
-          <UploadedFilesSection fileData={fileData} currentUser={currentUser} />
-        </div>
       </div>
+      <div className="center-section">
+        <UploadedFilesSection fileData={fileData} currentUser={currentUser} />
+      </div>
+
+
 
       <Modal show={showFileModal} onHide={() => setShowFileModal(false)}>
         <Modal.Header closeButton>
           <Modal.Title>File Details</Modal.Title>
+          <Button variant="secondary" onClick={toggleSave}>
+            {isSaved ? "Unsave" : "Save"}
+          </Button>
         </Modal.Header>
         <Modal.Body>
           {selectedFile && (
@@ -278,6 +315,7 @@ export default function Dashboard() {
               <h4>Title: {selectedFile.title}</h4>
               <p>Uploaded By: {selectedFile.uploaderEmail}</p>
               <img src={selectedFile.coverPageURL} alt="Cover Page" style={{ width: "100%" }} />
+              <p>Description: {selectedFile.description}</p>
             </div>
           )}
           <div>
@@ -311,11 +349,12 @@ export default function Dashboard() {
           </Button>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="primary" onClick={() => handleOpen(selectedFile.fileURL)}>
+          <Button variant="primary" onClick={() => handleOpen(selectedFile.coverPageURL)}>
             Open
           </Button>
         </Modal.Footer>
       </Modal>
-    </div>
+    </div >
   );
 }
+

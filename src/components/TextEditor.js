@@ -6,8 +6,9 @@ import JoditEditor from 'jodit-react';
 import '../styles/TextEditor.css';
 
 function TextEditor() {
-    const [chapterName, setChapterName] = useState('');
-    const [content, setContent] = useState('');
+    const [chapterName, setChapterName] = useState(''); // Define state for chapter name
+    const [content, setContent] = useState(''); // Define state for content
+    const [chapters, setChapters] = useState([]); // Define state for chapters
     const editorRef = useRef(null);
 
     const location = useLocation();
@@ -21,30 +22,36 @@ function TextEditor() {
     };
 
     const downloadPdf = () => {
-        if (!editorRef.current) return;
-
         const pdf = new jsPDF('p', 'pt', 'a4');
         pdf.setFontSize(12);
 
-        html2canvas(editorRef.current).then(canvas => {
-            const imgData = canvas.toDataURL('image/png');
-            const imgWidth = 595.28; // A4 width in pixels
-            const pageHeight = 842; // A4 height in pixels
-            const imgHeight = (canvas.height * imgWidth) / canvas.width;
-            let heightLeft = imgHeight;
-            let position = 0;
+        chapters.forEach((chapter, index) => {
+            const chapterContent = chapter.content;
 
-            pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight;
+            html2canvas(document.getElementById(`chapter-${index}`)).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                const imgWidth = 595.28; // A4 width in pixels
+                const pageHeight = 842; // A4 height in pixels
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                let heightLeft = imgHeight;
+                let position = 0;
 
-            while (heightLeft >= 0) {
-                position = heightLeft - imgHeight;
-                pdf.addPage();
                 pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                 heightLeft -= pageHeight;
-            }
 
-            pdf.save('text_editor_content.pdf');
+                while (heightLeft >= 0) {
+                    position = heightLeft - imgHeight;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
+                }
+
+                if (index !== chapters.length - 1) {
+                    pdf.addPage();
+                } else {
+                    pdf.save('text_editor_content.pdf');
+                }
+            });
         });
     };
 
@@ -70,6 +77,18 @@ function TextEditor() {
         reader.readAsText(file);
     };
 
+    // Function to add a new chapter
+    const addChapter = () => {
+        const newChapter = {
+            name: chapterName,
+            content: content
+        };
+        setChapters([...chapters, newChapter]);
+        // Clear chapter name and content after adding
+        setChapterName('');
+        setContent('');
+    };
+
     // Jodit editor configuration with desired options
     const editorConfig = {
         readonly: false,
@@ -86,44 +105,43 @@ function TextEditor() {
 
     return (
         <div className="text-editor-container">
-            <div className="section go-back">
-                <button onClick={goBack}>Go Back</button>
+            <div className="button-section">
+                <button className="go-back-button" onClick={goBack}>Go Back</button>
+                <button className="add-btn" onClick={addChapter}>Add</button>
+                <button className="publish-button" onClick={downloadPdf}>Publish</button>
             </div>
 
-            <div className="section uploaded-file-section">
-                <h2>Uploaded File Details</h2>
-                <p><strong>Title:</strong> {uploadedFileTitle}</p>
-                <p><strong>Description:</strong> {uploadedFileDescription}</p>
+            <div className="section title-section">
+                <h1 className="title">{uploadedFileTitle}</h1>
             </div>
+            <p className="description">{uploadedFileDescription}</p>
 
-            <div ref={editorRef} className="section editor-section">
-                <div className="editor-content">
-                    <input
-                        type="text"
-                        value={chapterName}
-                        placeholder="Chapter Name"
-                        onChange={(e) => setChapterName(e.target.value)}
-                        className="input-field"
-                    />
-                    <br />
-                    <JoditEditor
-                        value={content}
-                        config={editorConfig}
-                        tabIndex={1}
-                        onBlur={(newContent) => setContent(newContent)}
-                        className="editor"
-                    />
+            {chapters.map((chapter, index) => (
+                <div key={index} id={`chapter-${index}`} className="section editor-section">
+                    <div className="editor-content">
+                        <input
+                            type="text"
+                            value={chapterName}
+                            placeholder="Chapter Name"
+                            onChange={(e) => setChapterName(e.target.value)}
+                            className="input-field"
+                        />
+                        <br />
+                        <JoditEditor
+                            value={content}
+                            config={editorConfig}
+                            tabIndex={1}
+                            onBlur={(newContent) => setContent(newContent)}
+                            className="editor"
+                            ref={editorRef}
+                        />
+                    </div>
+                    <div className="upload-section">
+                        <input type="file" accept="image/*" onChange={handleImageUpload} />
+                        <input type="file" accept=".txt" onChange={handleTextFileUpload} />
+                    </div>
                 </div>
-            </div>
-
-            <div className="section button-section">
-                <button className="publish-btn" onClick={downloadPdf}>Publish</button>
-            </div>
-
-            <div className="section upload-section">
-                <input type="file" accept="image/*" onChange={handleImageUpload} />
-                <input type="file" accept=".txt" onChange={handleTextFileUpload} />
-            </div>
+            ))}
         </div>
     );
 }

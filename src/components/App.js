@@ -20,7 +20,7 @@ function App() {
           <Route path="/update-profile" element={<PrivateRoute><UpdateProfile /></PrivateRoute>} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/textEditor" element={<PrivateRoute><TextEditor /></PrivateRoute>} />
+          <Route path="/dashboard/textEditor" element={<PrivateRoute><TextEditor /></PrivateRoute>} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
         </Routes>
       </AuthProvider>
