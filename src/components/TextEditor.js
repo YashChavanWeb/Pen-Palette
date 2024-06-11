@@ -3,9 +3,10 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import JoditEditor from 'jodit-react';
+import { storage, db } from '../firebase';
 import '../styles/TextEditor.css';
 
-function TextEditor() {
+function TextEditor({ currentUser }) {
     const [chapterName, setChapterName] = useState('');
     const [content, setContent] = useState('');
     const [chapters, setChapters] = useState([]);
@@ -23,39 +24,61 @@ function TextEditor() {
         navigate('/dashboard');
     };
 
-    const downloadPdf = () => {
+    async function downloadPdf() {
         const pdf = new jsPDF('p', 'pt', 'a4');
         pdf.setFontSize(12);
 
-        chapters.forEach((chapter, index) => {
-            const chapterContent = chapter.content;
+        const uploaderEmail = currentUser ? currentUser.email : 'abc@gmail.com'; // Use default email if currentUser is not available
 
-            html2canvas(document.getElementById(`chapter-${index}`)).then(canvas => {
-                const imgData = canvas.toDataURL('image/png');
-                const imgWidth = 595.28;
-                const pageHeight = 842;
-                const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                let heightLeft = imgHeight;
-                let position = 0;
+        const pdfPromises = chapters.map((chapter, index) => {
+            return new Promise((resolve, reject) => {
+                const chapterContent = chapter.content;
 
-                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                heightLeft -= pageHeight;
+                html2canvas(document.getElementById(`chapter-${index}`)).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const imgWidth = 595.28;
+                    const pageHeight = 842;
+                    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+                    let heightLeft = imgHeight;
+                    let position = 0;
 
-                while (heightLeft >= 0) {
-                    position = heightLeft - imgHeight;
-                    pdf.addPage();
                     pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
                     heightLeft -= pageHeight;
-                }
 
-                if (index !== chapters.length - 1) {
-                    pdf.addPage();
-                } else {
-                    pdf.save('text_editor_content.pdf');
-                }
+                    while (heightLeft >= 0) {
+                        position = heightLeft - imgHeight;
+                        pdf.addPage();
+                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                        heightLeft -= pageHeight;
+                    }
+
+                    if (index !== chapters.length - 1) {
+                        pdf.addPage();
+                    } else {
+                        const pdfBlob = pdf.output('blob');
+                        const fileName = `${uploadedFileTitle}.pdf`; // Use title name for the PDF file
+                        const pdfURL = URL.createObjectURL(pdfBlob);
+                        const link = document.createElement('a');
+                        link.href = pdfURL;
+                        link.setAttribute('download', fileName);
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                        resolve();
+                    }
+                });
             });
         });
-    };
+
+        try {
+            await Promise.all(pdfPromises);
+
+            // Redirect to the dashboard after the file is published
+            navigate('/dashboard');
+        } catch (error) {
+            console.error("Error saving PDF file:", error);
+        }
+    }
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
