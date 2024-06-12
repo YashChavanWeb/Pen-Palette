@@ -32,46 +32,29 @@ function TextEditor({ currentUser }) {
 
         const pdfPromises = chapters.map((chapter, index) => {
             return new Promise((resolve, reject) => {
-                const chapterContent = chapter.content;
+                const chapterElement = document.getElementById(`pdf-chapter-${index}`);
 
-                html2canvas(document.getElementById(`chapter-${index}`)).then(canvas => {
+                html2canvas(chapterElement, { scale: 2 }).then(canvas => {
                     const imgData = canvas.toDataURL('image/png');
-                    const imgWidth = 595.28;
-                    const pageHeight = 842;
+                    const imgWidth = 595.28; // Width of A4 page
+                    const pageHeight = 842; // Height of A4 page
                     const imgHeight = (canvas.height * imgWidth) / canvas.width;
-                    let heightLeft = imgHeight;
-                    let position = 0;
 
-                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                    heightLeft -= pageHeight;
-
-                    while (heightLeft >= 0) {
-                        position = heightLeft - imgHeight;
-                        pdf.addPage();
-                        pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
-                        heightLeft -= pageHeight;
-                    }
+                    pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, pageHeight);
 
                     if (index !== chapters.length - 1) {
                         pdf.addPage();
-                    } else {
-                        const pdfBlob = pdf.output('blob');
-                        const fileName = `${uploadedFileTitle}.pdf`; // Use title name for the PDF file
-                        const pdfURL = URL.createObjectURL(pdfBlob);
-                        const link = document.createElement('a');
-                        link.href = pdfURL;
-                        link.setAttribute('download', fileName);
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                        resolve();
                     }
-                });
+                    resolve();
+                }).catch(error => reject(error));
             });
         });
 
         try {
             await Promise.all(pdfPromises);
+
+            const fileName = `${uploadedFileTitle}.pdf`; // Use title name for the PDF file
+            pdf.save(fileName);
 
             // Redirect to the dashboard after the file is published
             navigate('/dashboard');
@@ -85,7 +68,7 @@ function TextEditor({ currentUser }) {
         const reader = new FileReader();
         reader.onload = (e) => {
             const imgBase64 = e.target.result;
-            setContent((prevContent) => `${prevContent}<img src="${imgBase64}" alt="Uploaded Image" />`);
+            setContent((prevContent) => `${prevContent}<img src="${imgBase64}" alt="Uploaded Image" class="uploaded-image" />`);
         };
         reader.readAsDataURL(file);
     };
@@ -101,10 +84,16 @@ function TextEditor({ currentUser }) {
     };
 
     const addChapter = () => {
+        if (!chapterName.trim() || !content.trim()) {
+            alert("Chapter name and content cannot be empty");
+            return;
+        }
+
         const newChapter = {
             name: chapterName,
             content: content
         };
+
         if (editingIndex !== null) {
             const updatedChapters = [...chapters];
             updatedChapters[editingIndex] = newChapter;
@@ -113,6 +102,7 @@ function TextEditor({ currentUser }) {
         } else {
             setChapters([...chapters, newChapter]);
         }
+
         setChapterName('');
         setContent('');
     };
@@ -163,6 +153,16 @@ function TextEditor({ currentUser }) {
                     <button className="edit-btn" onClick={() => editChapter(index)}>Edit</button>
                 </div>
             ))}
+
+            {/* Hidden container for PDF generation */}
+            <div className="hidden-pdf-container">
+                {chapters.map((chapter, index) => (
+                    <div key={index} id={`pdf-chapter-${index}`} className="pdf-chapter">
+                        <h2>{chapter.name}</h2>
+                        <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
+                    </div>
+                ))}
+            </div>
 
             <div className="section editor-section">
                 <input

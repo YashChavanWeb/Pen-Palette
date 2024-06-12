@@ -12,6 +12,7 @@ function LandingPage() {
     const vantaRef = useRef(null);
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
+    const [showAnimation, setShowAnimation] = useState(false);
 
     useEffect(() => {
         // Vanta.js effect setup
@@ -47,13 +48,16 @@ function LandingPage() {
     }, []);
 
     const handleGetStarted = () => {
-        if (auth.currentUser) {
-            // Redirect to dashboard if user is logged in
-            navigate('/dashboard');
-        } else {
-            // Redirect to login if user is not logged in
-            navigate('/login');
-        }
+        setShowAnimation(true);
+        setTimeout(() => {
+            if (auth.currentUser) {
+                // Redirect to dashboard if user is logged in
+                navigate('/dashboard');
+            } else {
+                // Redirect to login if user is not logged in
+                navigate('/login');
+            }
+        }, 2000); // Adjust the time according to your animation duration
     };
 
     return (
@@ -68,8 +72,8 @@ function LandingPage() {
                     </div>
                 </div>
                 <div className={`button-container ${fadeIn ? 'fade-in-button' : ''}`}>
-                    <button className="buttonlp" onClick={handleGetStarted}>
-                        Get Started
+                    <button className={`buttonlp ${showAnimation ? 'button-animation' : ''}`} onClick={handleGetStarted}>
+                        {showAnimation ? 'Redirecting...' : 'Get Started'}
                     </button>
                 </div>
             </div>

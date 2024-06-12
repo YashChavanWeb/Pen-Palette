@@ -18,6 +18,7 @@ export default function UploadedFilesSection({ currentUser }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [showCommentsModal, setShowCommentsModal] = useState(false);
     const [fileComments, setFileComments] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         const unsubscribe = db.ref("files").on("value", (snapshot) => {
@@ -42,6 +43,15 @@ export default function UploadedFilesSection({ currentUser }) {
             unsubscribe();
         };
     }, [currentUser]);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const filteredFiles = fileData.filter(
+        (file) =>
+            file.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const showToast = (message) => {
         try {
@@ -143,7 +153,6 @@ export default function UploadedFilesSection({ currentUser }) {
         setEditTitle(fileToEdit.title);
     };
 
-
     function formatDate(dateString) {
         const date = new Date(dateString);
         const day = date.getDate();
@@ -159,7 +168,7 @@ export default function UploadedFilesSection({ currentUser }) {
         const minutes = time.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? hours : 12; // Handle midnight
+        hours = hours ? 12 : 0; // Handle midnight
         const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
         return formattedTime;
     }
@@ -174,13 +183,25 @@ export default function UploadedFilesSection({ currentUser }) {
         }
     }
 
-
     return (
         <div className="center-section">
+            <br />
+            <br />
+            <br />
+            <br />
+
             <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Files</h2>
-            <div className="row flex-nowrap overflow-auto">
-                {fileData.map((file) => (
-                    <div key={file.id} className="col-md-4 mb-4 mt-4">
+            <input
+                type="text"
+                placeholder="Search by title..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="form-control mb-3"
+                id="searchbar"
+            />
+            <div className="row">
+                {filteredFiles.map((file) => (
+                    <div key={file.id} className="col-md-4 mb-4">
                         <div className="cardbitch">
                             <img
                                 src={file.coverPageURL}
@@ -196,7 +217,7 @@ export default function UploadedFilesSection({ currentUser }) {
 
                                 {file.createdBy !== currentUser.uid && (
                                     <>
-                                        <p className="card-text">Likes: {file.likes}</p> {/* Display like count */}
+                                        <p className="card-text">Likes: {file.likes}</p>
                                     </>
                                 )}
 
@@ -219,60 +240,51 @@ export default function UploadedFilesSection({ currentUser }) {
                     <Modal.Title>Edit File</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form.Group controlId="editTitle">
-                        <Form.Label>Title</Form.Label>
-                        <Form.Control
-                            type="text"
-                            value={editTitle}
-                            onChange={(e) => setEditTitle(e.target.value)}
-                        />
-                    </Form.Group>
-                    {/* Display current cover page image */}
-                    <img src={editCoverPageURL} alt="Cover Page" style={{ maxHeight: "250px" }} />
+                    <Form>
+                        <Form.Group controlId="formFileTitle">
+                            <Form.Label>Title</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={editTitle}
+                                onChange={(e) => setEditTitle(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Form.Group controlId="formCoverPageURL">
+                            <Form.Label>Cover Page URL</Form.Label>
+                            <Form.Control
+                                type="text"
+                                value={editCoverPageURL}
+                                onChange={(e) => setEditCoverPageURL(e.target.value)}
+                            />
+                        </Form.Group>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-                        Cancel
+                        Close
                     </Button>
-                    {/* Reset title to original value */}
-                    <Button variant="secondary" onClick={resetEditForm}>
-                        Reset Title
-                    </Button>
-                    {/* Save edited file */}
-                    <Button variant="primary" onClick={saveEditedFile} disabled={loading}>
-                        {loading ? <Spinner animation="border" size="sm" /> : "Save"}
+                    <Button variant="primary" onClick={saveEditedFile}>
+                        Save Changes
                     </Button>
                 </Modal.Footer>
             </Modal>
             <Modal show={showConfirmDelete} onHide={() => setShowConfirmDelete(false)}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Confirm Deletion</Modal.Title>
+                    <Modal.Title>Confirm Delete</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Are you sure you want to delete this file?</Modal.Body>
+                <Modal.Body>
+                    Are you sure you want to delete this file?
+                </Modal.Body>
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setShowConfirmDelete(false)}>
                         Cancel
                     </Button>
-                    <Button variant="danger" onClick={() => deleteFiles([fileToDelete])} disabled={loading}>
+                    <Button variant="danger" onClick={() => deleteFiles([fileToDelete])}>
                         {loading ? <Spinner animation="border" size="sm" /> : "Delete"}
                     </Button>
                 </Modal.Footer>
             </Modal>
-            <Modal show={showCommentsModal} onHide={() => setShowCommentsModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>File Comments</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <h4>Comments:</h4>
-                    {fileComments.map((comment, index) => (
-                        <div key={index}>
-                            <p>{comment.text}</p>
-                            <small>By: {comment.userEmail}</small>
-                        </div>
-                    ))}
-                </Modal.Body>
-            </Modal>
-            <ToastContainer position="top-right" autoClose={1500} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover />
+            <ToastContainer />
         </div>
     );
 }

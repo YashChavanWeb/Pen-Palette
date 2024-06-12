@@ -20,7 +20,7 @@
 .book {
     height: 150px;
 }
-.title {
+.titlel {
     color: white;
     text-align: center;
     margin-top: 50px;
@@ -44,6 +44,7 @@
     background-color: transparent;
     color: white;
     transition: 0.3s ease-in-out;
+    border: 1px solid white;
 }
 .button-link{
     text-decoration: none;

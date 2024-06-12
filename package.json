@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "bootstrap": "^5.3.3",
     "firebase": "^10.10.0",
+    "framer-motion": "^11.2.10",
     "html2canvas": "^1.4.1",
     "jodit-react": "^4.1.2",
     "jspdf": "^2.5.1",

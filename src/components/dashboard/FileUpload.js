@@ -95,9 +95,14 @@ export default function FileUpload({ currentUser }) {
         document.getElementById("coverPageInput").value = "";
     };
 
+    const closeModal = () => {
+        setShowSuccessModal(false);
+        handleCancel();
+    };
+
     return (
         <div className="file-upload-container mb-3">
-            <h2 className="text-center mb-4">File Upload</h2>
+            <h2 className="text-center mb-4">Story Details</h2>
             <div className="card-body">
                 <input id="coverPageInput" type="file" accept="image/*" className="form-control mb-2" onChange={handleCoverPageChange} />
 
@@ -107,7 +112,7 @@ export default function FileUpload({ currentUser }) {
                 <input type="text" className="form-control mb-2" placeholder="Title" value={title} onChange={handleTitleChange} />
                 <textarea className="form-control mb-2" placeholder="Description" value={description} onChange={handleDescriptionChange} />
                 {error && <p className="text-danger">{error}</p>}
-                <button onClick={handlePublish} className="bttn btn-success btn-block " disabled={loading}>
+                <button onClick={handlePublish} className="bttn btn-success btn-block" disabled={loading}>
                     {loading ? <div className="spinner-border spinner-border-sm" role="status"></div> : "Publish"}
                 </button>
                 <button onClick={handleNext} className="bttn" disabled={loading}>
@@ -119,25 +124,26 @@ export default function FileUpload({ currentUser }) {
             </div>
 
             {showSuccessModal && (
-                <div className="modal" style={{ display: "block", width: "100vw", backgroundColor: "rgba(0, 0, 0, 0.5)", color: "black" }}>
-                    <div className="modal-content" style={{ backgroundColor: "white", margin: "15% auto", padding: "20px", border: "1px solid #888", width: "50%" }}>
+                <div className="modal" style={{ display: "block" }}>
+                    <div className="modal-content">
                         <div className="modal-header">
                             <ion-icon name="happy-outline" size="large"></ion-icon>
                             <h5 className="modal-title">File Uploaded Successfully!</h5>
-                            <button type="button" className="close" style={{ border: "none", backgroundColor: "transparent" }} onClick={() => setShowSuccessModal(false)}>
+                            <button type="button" className="close" onClick={closeModal}>
                                 <ion-icon name="close-circle" size="large"></ion-icon>
                             </button>
                         </div>
                         <div className="modal-body">
-                            Your file has been successfully uploaded.
+                            {/* Display the uploaded cover page image */}
+                            {coverPagePreview && (
+                                <img src={coverPagePreview} alt="Uploaded Cover Page" style={{ maxWidth: '100%' }} />
+                            )}
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" onClick={() => setShowSuccessModal(false)}>Close</button>
                         </div>
                     </div>
                 </div>
             )}
-
         </div>
     );
 }
