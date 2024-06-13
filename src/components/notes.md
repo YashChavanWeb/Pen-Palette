@@ -52,6 +52,7 @@ Done with Viewing modals for cards, header, adding animations, correcting the ui
 - removed all the unnecessary books
 - text editor publish is saving pdf properly now
 - also changed the uploaded files section modal
+- publish done -- wtf
 
 - files changed:
   uploaded files section.js
