@@ -3,10 +3,12 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import JoditEditor from 'jodit-react';
-import { storage, db } from '../firebase';
+import { useAuth } from '../contexts/AuthContexts';
+import { db, storage } from '../firebase'; // Import the Firebase database and storage instances
 import '../styles/TextEditor.css';
 
-function TextEditor({ currentUser }) {
+function TextEditor() {
+    const { currentUser } = useAuth();
     const [chapterName, setChapterName] = useState('');
     const [content, setContent] = useState('');
     const [chapters, setChapters] = useState([]);
@@ -56,13 +58,35 @@ function TextEditor({ currentUser }) {
             const fileName = `${uploadedFileTitle}.pdf`; // Use title name for the PDF file
             pdf.save(fileName);
 
+            // Store the PDF file to Firebase Storage
+            const pdfFileRef = storage.ref().child(fileName);
+            await pdfFileRef.put(pdf.output('blob'));
+
+            // Get the download URL for the PDF file
+            const pdfURL = await pdfFileRef.getDownloadURL();
+
+            // Save the file details to Firebase Database
+            const newFileKey = db.ref().child("files").push().key;
+            await db.ref(`files/${newFileKey}`).set({
+                title: uploadedFileTitle,
+                description: uploadedFileDescription,
+                coverPageURL,
+                pdfURL,
+                uploaderEmail: currentUser ? currentUser.email : 'abc@gmail.com', // Use default email if currentUser is not available
+                createdBy: currentUser ? currentUser.uid : null,
+                createdAt: new Date().toISOString(),
+                views: 0,
+            });
+
+            alert("File published successfully!");
+
             // Redirect to the dashboard after the file is published
             navigate('/dashboard');
         } catch (error) {
-            console.error("Error saving PDF file:", error);
+            console.error("Error publishing file:", error);
+            alert("An error occurred while publishing the file. Please try again.");
         }
     }
-
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
         const reader = new FileReader();
@@ -113,6 +137,37 @@ function TextEditor({ currentUser }) {
         setEditingIndex(index);
     };
 
+    const saveStory = async () => {
+        try {
+            if (chapters.length === 0) {
+                alert("No chapters to save");
+                return;
+            }
+
+            // Save the working story to the "My Stories" node in the database
+            const storyRef = await db.ref('MyStories').push();
+            const storyId = storyRef.key;
+
+            // Save story details without the PDF
+            await storyRef.set({
+                title: uploadedFileTitle,
+                description: uploadedFileDescription,
+                chapters: chapters,
+                createdAt: new Date().toISOString(),
+                createdBy: currentUser ? currentUser.uid : null
+            });
+
+            // Save the cover page image to storage with the story ID as filename
+            const coverPageRef = storage.ref().child(`covers/${storyId}`);
+            await coverPageRef.putString(coverPageURL, 'data_url');
+
+            alert("Story saved successfully!");
+        } catch (error) {
+            console.error("Error saving story:", error);
+            alert("An error occurred while saving the story. Please try again.");
+        }
+    };
+
     const editorConfig = {
         readonly: false,
         toolbarAdaptive: false,
@@ -144,6 +199,10 @@ function TextEditor({ currentUser }) {
                     <h1 className="title">{uploadedFileTitle}</h1>
                     <p className="description">{uploadedFileDescription}</p>
                 </div>
+            </div>
+
+            <div className="section email-section">
+                <p>Email: {currentUser ? currentUser.email : 'Not logged in'}</p>
             </div>
 
             {chapters.map((chapter, index) => (
@@ -185,6 +244,11 @@ function TextEditor({ currentUser }) {
                     <input type="file" accept="image/*" onChange={handleImageUpload} />
                     <input type="file" accept=".txt" onChange={handleTextFileUpload} />
                 </div>
+            </div>
+
+            {/* Save button */}
+            <div className="button-section">
+                <button className="save-btn" onClick={saveStory}>Save</button>
             </div>
         </div>
     );
