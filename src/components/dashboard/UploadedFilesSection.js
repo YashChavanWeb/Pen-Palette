@@ -4,6 +4,7 @@ import { db } from "../../firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/dashboard.css"; // Import the dashboard CSS file
+import { AnimatePresence, motion } from "framer-motion";
 
 export default function UploadedFilesSection({ currentUser }) {
     const [loading, setLoading] = useState(false);
@@ -14,11 +15,16 @@ export default function UploadedFilesSection({ currentUser }) {
     const [showEditModal, setShowEditModal] = useState(false);
     const [editTitle, setEditTitle] = useState("");
     const [editCoverPageURL, setEditCoverPageURL] = useState("");
+    const [editDescription, setEditDescription] = useState("");
     const [fileToEdit, setFileToEdit] = useState(null);
     const [selectedFile, setSelectedFile] = useState(null);
-    const [showCommentsModal, setShowCommentsModal] = useState(false);
+    const [editFile, setEditFile] = useState(null);
+    const [showFileModal, setShowFileModal] = useState(false);
     const [fileComments, setFileComments] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const [showComments, setShowComments] = useState(false);
+    const [comment, setComment] = useState("");
+    const [commentError, setCommentError] = useState("");
 
     useEffect(() => {
         const unsubscribe = db.ref("files").on("value", (snapshot) => {
@@ -94,8 +100,9 @@ export default function UploadedFilesSection({ currentUser }) {
                     return (currentViews || 0) + 1;
                 });
             }
-            setSelectedFile({ id: fileId, fileURL });
-            setShowCommentsModal(true);
+            const file = fileData.find((file) => file.id === fileId);
+            setSelectedFile(file);
+            setShowFileModal(true);
             fetchComments(fileId);
         } catch (error) {
             console.error(error);
@@ -121,23 +128,35 @@ export default function UploadedFilesSection({ currentUser }) {
     };
 
     const handleConfirmDelete = (fileId) => {
-        setFileToDelete(fileId);
+        const fileToDelete = fileData.find(file => file.id === fileId);
+        setFileToDelete(fileToDelete);
         setShowConfirmDelete(true);
     };
+
 
     const handleEdit = (file) => {
         setEditTitle(file.title);
         setEditCoverPageURL(file.coverPageURL);
+        setEditDescription(file.description || "");
         setFileToEdit(file);
         setShowEditModal(true);
     };
 
+
+
     const saveEditedFile = async () => {
         try {
             setLoading(true);
-            await db.ref(`files/${fileToEdit.id}`).update({
-                title: editTitle
-            });
+            const updates = {
+                title: editTitle,
+                description: editDescription
+            };
+
+            // if (editFile) {
+            //     updates.coverPageURL = fileURL; // Update the coverPageURL in the updates object
+            // }
+
+            await db.ref(`files/${fileToEdit.id}`).update(updates);
             showToast("File updated successfully!");
         } catch (error) {
             console.error(error);
@@ -146,11 +165,132 @@ export default function UploadedFilesSection({ currentUser }) {
             setLoading(false);
             setShowEditModal(false);
             setFileToEdit(null);
+            setEditFile(null);
         }
     };
 
+
+    // const saveEditedFile = async () => {
+    //     try {
+    //         setLoading(true);
+    //         const updates = {
+    //             title: editTitle,
+    //             description: editDescription
+    //         };
+
+    //         if (editFile) {
+    //             const fileRef = db.storage().ref().child(`files/${fileToEdit.id}`);
+    //             await fileRef.put(editFile);
+    //             const fileURL = await fileRef.getDownloadURL();
+    //             updates.coverPageURL = fileURL;
+    //             setEditCoverPageURL(fileURL); // Update editCoverPageURL with the new URL
+    //         }
+
+    //         await db.ref(`files/${fileToEdit.id}`).update(updates);
+    //         showToast("File updated successfully!");
+    //     } catch (error) {
+    //         console.error(error);
+    //         showToast("Failed to update file");
+    //     } finally {
+    //         setLoading(false);
+    //         setShowEditModal(false);
+    //         setFileToEdit(null);
+    //         setEditFile(null);
+    //     }
+    // };
+
+    const handleFileChange = (e) => {
+        const file = e.target.files[0];
+        setEditFile(file);
+        // Assuming you have a function to upload the file to your storage
+        uploadCoverImage(file);
+    };
+
+    const uploadCoverImage = async (file) => {
+        try {
+            setLoading(true);
+            const fileRef = db.storage().ref().child(`files/${fileToEdit.id}`);
+            await fileRef.put(file);
+            const fileURL = await fileRef.getDownloadURL();
+            setEditCoverPageURL(fileURL); // Update editCoverPageURL with the new URL
+            return fileURL; // Return the file URL
+        } catch (error) {
+            console.error(error);
+            showToast("Failed to upload cover image");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+
+
+
+
+
     const resetEditForm = () => {
         setEditTitle(fileToEdit.title);
+        setEditCoverPageURL(fileToEdit.coverPageURL);
+        setEditDescription(fileToEdit.description || "");
+        setEditFile(null);
+    };
+
+    const handleToggleComments = () => {
+        setShowComments(!showComments);
+    };
+
+    const handleCommentChange = (e) => {
+        setComment(e.target.value);
+        if (e.target.value.trim().length === 0) {
+            setCommentError("Comment cannot be empty");
+        } else {
+            setCommentError("");
+        }
+    };
+
+    const handleCommentSubmit = async (fileId) => {
+        if (comment.trim().length === 0) {
+            setCommentError("Comment cannot be empty");
+            return;
+        }
+
+        try {
+            setLoading(true);
+            const newCommentRef = db.ref(`files/${fileId}/comments`).push();
+            await newCommentRef.set({
+                userEmail: currentUser.email,
+                text: comment,
+                createdAt: new Date().toISOString(),
+            });
+            setComment("");
+            fetchComments(fileId);
+        } catch (error) {
+            console.error(error);
+            showToast("Failed to add comment");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleDeleteComment = async (commentId) => {
+        try {
+            setLoading(true);
+            await db.ref(`files/${selectedFile.id}/comments/${commentId}`).remove();
+            fetchComments(selectedFile.id);
+            showToast("Comment deleted successfully!");
+        } catch (error) {
+            console.error(error);
+            showToast("Failed to delete comment");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const toggleSave = () => {
+        // Handle save and unsave logic here
+    };
+
+    const handleOpen = (coverPageURL) => {
+        // Handle opening the file here
     };
 
     function formatDate(dateString) {
@@ -168,7 +308,7 @@ export default function UploadedFilesSection({ currentUser }) {
         const minutes = time.getMinutes();
         const ampm = hours >= 12 ? 'PM' : 'AM';
         hours = hours % 12;
-        hours = hours ? 12 : 0; // Handle midnight
+        hours = hours ? hours : 12; // Handle midnight
         const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes} ${ampm}`;
         return formattedTime;
     }
@@ -195,96 +335,247 @@ export default function UploadedFilesSection({ currentUser }) {
                 type="text"
                 placeholder="Search by title..."
                 value={searchQuery}
-                onChange={handleSearchChange}
-                className="form-control mb-3"
-                id="searchbar"
+                onChange={handleSearchChange} className="form-control mb-3"
             />
+            <AnimatePresence>
+                {loading && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="text-center"
+                    >
+                        <Spinner animation="border" variant="primary" />
+                    </motion.div>
+                )}
+            </AnimatePresence>
+            <AnimatePresence>
+                {!loading && filteredFiles.length === 0 && (
+                    <motion.p
+                        initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="text-center"
+                    >
+                        No files found.
+                    </motion.p>
+                )}
+            </AnimatePresence>
             <div className="row">
                 {filteredFiles.map((file) => (
-                    <div key={file.id} className="col-md-4 mb-4">
-                        <div className="cardbitch">
+                    <motion.div
+                        key={file.id}
+                        className="col-lg-4 col-md-6 col-sm-12 mb-4"
+                        initial={{ opacity: 0, scale: 0.8 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.8 }}
+                    >
+                        <div className="card bg-white shadow">
                             <img
                                 src={file.coverPageURL}
-                                alt="Cover Page"
                                 className="card-img-top"
-                                style={{ height: "300px", cursor: "pointer", borderRadius: "10px" }}
-                                onClick={() => openFile(file.id, file.fileURL, file.createdBy)}
+                                alt={file.title}
+                                style={{ height: "300px", objectFit: "cover" }}
                             />
-                            <div className="card-body">
+                            <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{file.title}</h5>
-                                <p className="card-text">Uploaded: {formatDate(file.createdAt)}</p>
-                                <p className="card-text">Views: {file.views}</p>
-
-                                {file.createdBy !== currentUser.uid && (
-                                    <>
-                                        <p className="card-text">Likes: {file.likes}</p>
-                                    </>
-                                )}
-
-                                <Button variant="primary" onClick={() => handleEdit(file)} disabled={loading} className="bttn">
-                                    Edit
-                                </Button>{" "}
-                                <Button variant="danger" onClick={() => handleConfirmDelete(file.id)} disabled={loading} className="bttn">
-                                    {loading ? <Spinner animation="border" size="sm" /> : "Delete"}
-                                </Button>
-                                <Button variant="info" onClick={() => openFile(file.id, file.fileURL, file.createdBy)} className="bttn">
-                                    Comments
-                                </Button>
+                                <div className="mt-auto d-flex justify-content-between">
+                                    <div>
+                                        <p className="card-text"><strong>Uploaded on: </strong>{formatDate(file.createdAt)}</p>
+                                        <p className="card-text"><strong>Uploaded at: </strong>{formatTime(file.createdAt)}</p>
+                                    </div>
+                                </div>
+                                <div className="mt-auto d-flex justify-content-between">
+                                    <Button
+                                        className="btn btn-primary"
+                                        onClick={() => handleEdit(file)}
+                                    >
+                                        Edit
+                                    </Button>
+                                    <Button
+                                        className="btn btn-danger"
+                                        onClick={() => handleConfirmDelete(file.id)}
+                                    >
+                                        Delete
+                                    </Button>
+                                    <Button
+                                        className="btn btn-secondary"
+                                        onClick={() => openFile(file.id, file.fileURL, file.createdBy)}
+                                    >
+                                        Open
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
-            <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Edit File</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form>
-                        <Form.Group controlId="formFileTitle">
-                            <Form.Label>Title</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={editTitle}
-                                onChange={(e) => setEditTitle(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Form.Group controlId="formCoverPageURL">
-                            <Form.Label>Cover Page URL</Form.Label>
-                            <Form.Control
-                                type="text"
-                                value={editCoverPageURL}
-                                onChange={(e) => setEditCoverPageURL(e.target.value)}
-                            />
-                        </Form.Group>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowEditModal(false)}>
-                        Close
-                    </Button>
-                    <Button variant="primary" onClick={saveEditedFile}>
-                        Save Changes
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-            <Modal show={showConfirmDelete} onHide={() => setShowConfirmDelete(false)}>
-                <Modal.Header closeButton>
-                    <Modal.Title>Confirm Delete</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Are you sure you want to delete this file?
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setShowConfirmDelete(false)}>
-                        Cancel
-                    </Button>
-                    <Button variant="danger" onClick={() => deleteFiles([fileToDelete])}>
-                        {loading ? <Spinner animation="border" size="sm" /> : "Delete"}
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+
+            <AnimatePresence>
+                {showConfirmDelete && (
+                    <motion.div
+                        className="modal-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.92 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowConfirmDelete(false)}
+                    >
+                        <motion.div
+                            className="modal-content"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="modal-header">
+                                <h5 className="modal-title">Confirm Delete</h5>
+                                <button className="close" onClick={() => setShowConfirmDelete(false)}>
+                                    <ion-icon name="close-circle" size="large"></ion-icon>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                <h5 className="modal-title">Delete File</h5>
+                                <img src={fileToDelete && fileToDelete.coverPageURL} alt="Cover Page" style={{ maxWidth: "100%", maxHeight: "200px", margin: "auto", display: "block" }} />
+                                <p><strong>Title: </strong>{fileToDelete && fileToDelete.title}</p>
+                                <p>Are you sure you want to delete this file?</p>
+                            </div>
+                            <div className="modal-footer">
+                                <Button variant="secondary" onClick={() => setShowConfirmDelete(false)}>
+                                    Cancel
+                                </Button>
+                                <Button variant="danger" onClick={() => handleDelete(fileToDelete.id)}>
+                                    Delete
+                                </Button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
+            <AnimatePresence>
+                {showEditModal && (
+                    <motion.div
+                        className="modal-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.92 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowEditModal(false)}
+                    >
+                        <motion.div
+                            className="modal-content"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="modal-header">
+                                <h5 className="modal-title">Edit File</h5>
+                                <button className="close" onClick={() => setShowEditModal(false)}>
+                                    <ion-icon name="close-circle" size="large"></ion-icon>
+                                </button>
+                                <Button variant="primary" onClick={saveEditedFile}>Save Changes</Button> {/* Moved "Save Changes" button here */}
+                            </div>
+
+                            <div className="modal-body">
+                                <Form>
+                                    <Form.Group controlId="editTitle">
+                                        <Form.Label>Title</Form.Label>
+                                        <Form.Control
+                                            type="text"
+                                            value={editTitle}
+                                            onChange={(e) => setEditTitle(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                    <Form.Group controlId="editCoverPageURL">
+                                        <Form.Label>Cover Page</Form.Label>
+                                        <img src={editCoverPageURL} alt="Cover Page" style={{ maxWidth: "100%", maxHeight: "200px", margin: "auto", display: "block" }} />
+                                        {/* Remove the file input control */}
+                                    </Form.Group>
+                                    <Form.Group controlId="editDescription">
+                                        <Form.Label>Description</Form.Label>
+                                        <Form.Control
+                                            as="textarea"
+                                            rows={3}
+                                            value={editDescription}
+                                            onChange={(e) => setEditDescription(e.target.value)}
+                                        />
+                                    </Form.Group>
+                                </Form>
+                            </div>
+                            {/* Removed modal footer */}
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
+            <AnimatePresence>
+                {showFileModal && (
+                    <motion.div
+                        className="modal-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 0.92 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setShowFileModal(false)}
+                    >
+                        <motion.div
+                            className="modal-content"
+                            initial={{ scale: 0.8, opacity: 0 }}
+                            animate={{ scale: 1, opacity: 1 }}
+                            exit={{ scale: 0.8, opacity: 0 }}
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            <div className="modal-header">
+                                <h5 className="modal-title">File Details</h5>
+                                <button className="close" onClick={() => setShowFileModal(false)}>
+                                    <ion-icon name="close-circle" size="large"></ion-icon>
+                                </button>
+                            </div>
+                            <div className="modal-body">
+                                {selectedFile && (
+                                    <div className="content">
+                                        <img src={selectedFile.coverPageURL} alt="Cover Page" style={{ width: "30%", margin: "10px" }} />
+                                        <div>
+                                            <h3>{selectedFile.title}</h3>
+                                            <p><i>Uploaded By: {selectedFile.uploaderEmail}</i></p>
+                                            <p>Description: {selectedFile.description}</p>
+                                        </div>
+                                    </div>
+                                )}
+                                <div>
+                                    <p className="comflex">
+                                        <h4 className="p-2">Comments <ion-icon name="chatbubble-outline"></ion-icon>  :</h4>
+                                        <button onClick={handleToggleComments} className="modalbtn">
+                                            {showComments ? "Hide Comments" : "Show Comments"} <ion-icon name="chatbubbles-outline"></ion-icon>
+                                        </button>
+                                    </p>
+                                    {showComments && fileComments.map((comment, index) => (
+                                        <div className="comment m-2" key={index}>
+                                            <i><small>By: {comment.userEmail}</small></i>
+                                            <p>{comment.text}</p>
+                                            {comment.userEmail === (currentUser && currentUser.email) && (
+                                                <button className="modalbtn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+                                            )}
+                                        </div>
+                                    ))}
+                                </div>
+
+                            </div>
+                            <div className="modal-footer">
+                                <button className="modalbtn" onClick={() => handleOpen(selectedFile.coverPageURL)}>
+                                    Read
+                                </button>
+                                <button className="modalbtn" onClick={toggleSave}>
+                                    {selectedFile.isSaved ? "Unsave" : "Save"}
+                                </button>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <ToastContainer />
-        </div>
+        </div >
     );
 }
+

@@ -51,6 +51,7 @@ Done with Viewing modals for cards, header, adding animations, correcting the ui
 - publish in profile drawer model improvement
 - removed all the unnecessary books
 - text editor publish is saving pdf properly now
+- also changed the uploaded files section modal
 
 - files changed:
   uploaded files section.js

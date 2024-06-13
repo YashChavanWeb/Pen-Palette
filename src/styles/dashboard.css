@@ -174,3 +174,16 @@ header {
 
 
 
+
+.card {
+  margin: 20px;
+  width: 400px;
+  transition: all 0.5s ease-in-out;
+}
+
+  
+.card:hover {
+  transform: translateY(-15px); /* Move the card slightly upwards */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+}
+
