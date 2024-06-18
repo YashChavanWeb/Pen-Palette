@@ -5,6 +5,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/dashboard.css"; // Import the dashboard CSS file
 import { AnimatePresence, motion } from "framer-motion";
+import "../../styles/card.css";
 
 export default function UploadedFilesSection({ currentUser }) {
     const [loading, setLoading] = useState(false);
@@ -222,11 +223,6 @@ export default function UploadedFilesSection({ currentUser }) {
         }
     };
 
-
-
-
-
-
     const resetEditForm = () => {
         setEditTitle(fileToEdit.title);
         setEditCoverPageURL(fileToEdit.coverPageURL);
@@ -330,12 +326,13 @@ export default function UploadedFilesSection({ currentUser }) {
             <br />
             <br />
 
-            <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Files</h2>
+            <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Books</h2>
             <input
                 type="text"
                 placeholder="Search by title..."
                 value={searchQuery}
                 onChange={handleSearchChange} className="form-control mb-3"
+                id="searchbar"
             />
             <AnimatePresence>
                 {loading && (
@@ -369,46 +366,48 @@ export default function UploadedFilesSection({ currentUser }) {
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                     >
-                        <div className="card bg-white shadow">
-                            <img
-                                src={file.coverPageURL}
-                                className="card-img-top"
-                                alt={file.title}
-                                style={{ height: "300px", objectFit: "cover" }}
-                            />
+                        <div className="card flex bg-white shadow">
+                            <div className="image-container">
+                                <img
+                                    src={file.coverPageURL}
+                                    className="card-img-top"
+                                    alt={file.title}
+                                />
+                            </div>
                             <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{file.title}</h5>
                                 <div className="mt-auto d-flex justify-content-between">
                                     <div>
-                                        <p className="card-text"><strong>Uploaded on: </strong>{formatDate(file.createdAt)}</p>
-                                        <p className="card-text"><strong>Uploaded at: </strong>{formatTime(file.createdAt)}</p>
+                                        <p className="card-text"><b>Uploaded on: </b>{formatDate(file.createdAt)}</p>
+                                        <p className="card-text"><b>Uploaded at: </b>{formatTime(file.createdAt)}</p>
                                     </div>
                                 </div>
-                                <div className="mt-auto d-flex justify-content-between">
-                                    <Button
-                                        className="btn btn-primary"
+                                <div className="mt-3 d-flex">
+                                    <button
+                                        className="bttn" style={{ backgroundColor: "skyblue" }}
                                         onClick={() => handleEdit(file)}
                                     >
                                         Edit
-                                    </Button>
-                                    <Button
-                                        className="btn btn-danger"
+                                    </button>
+                                    <button
+                                        className="bttn" style={{ backgroundColor: "#e67272" }}
                                         onClick={() => handleConfirmDelete(file.id)}
                                     >
                                         Delete
-                                    </Button>
-                                    <Button
-                                        className="btn btn-secondary"
+                                    </button>
+                                    <button
+                                        className="bttn btn-secondary"
                                         onClick={() => openFile(file.id, file.fileURL, file.createdBy)}
                                     >
                                         Open
-                                    </Button>
+                                    </button>
                                 </div>
                             </div>
                         </div>
                     </motion.div>
                 ))}
             </div>
+
 
             <AnimatePresence>
                 {showConfirmDelete && (
@@ -578,4 +577,3 @@ export default function UploadedFilesSection({ currentUser }) {
         </div >
     );
 }
-

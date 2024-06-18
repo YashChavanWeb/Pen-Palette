@@ -9,12 +9,14 @@
   --card-height: 650px;
   --card-radius: 25px;
   --separator-height: 500px;
-  
+
   --bg: #fdf3f2;
   --card-bg: #f3ddc3;
   --intro-bg: #d4affa;
   --font-color: #807b7b;
-  
+  --red: #e67272;
+  --blue: #7472e6;
+
   --transition: transform 0.7s ease-in-out;
 }
 
@@ -28,8 +30,8 @@
   color: var(--font-color);
   background-color: var(--card-bg);
   box-shadow: 20px 20px 20px 7px #580391d1;
-  
-  .actions { 
+
+  .actions {
     position: fixed;
     width: 100%;
     padding: 50px;
@@ -40,7 +42,7 @@
     color: white;
     z-index: 6;
   }
-  
+
   .book-cover {
     position: relative;
     height: var(--separator-height);
@@ -54,8 +56,9 @@
     transition: var(--transition);
     z-index: 4;
   }
-  
-  .book-top, .card-img-top {
+
+  .book-top,
+  .card-img-top {
     width: 170px;
     position: absolute;
     top: 180px;
@@ -63,25 +66,21 @@
     z-index: 5;
     transform: translateZ(28.5px);
   }
-  .card-img-top {
-    width: 160px;
-    left: 255px;
-    top: 182px;
-  }
 
   .book-side {
     position: absolute;
     width: 172px;
     height: 29px;
-    top: 430px; 
+    top: 430px;
     left: 248px;
-    transform: translateY(-15px) translateX(0px) translateZ(16px) rotateX(104deg);
+    transform: translateY(-15px) translateX(0px) translateZ(16px)
+      rotateX(104deg);
   }
 
   .preface {
     height: var(--separator-height);
     padding: 10px;
-    transition: var(--transition); 
+    transition: var(--transition);
     background: white;
 
     .header {
@@ -99,13 +98,13 @@
     }
 
     .author {
-      font-family:sans-serif;
+      font-family: sans-serif;
       font-style: italic;
       color: black;
     }
 
     .body {
-      font-family: 'Quicksand', sans-serif;
+      font-family: "Quicksand", sans-serif;
     }
 
     .body p:first-child {
@@ -126,28 +125,68 @@
   transform: rotateX(180deg);
 }
 
-.card-body{
+.card-body {
   padding-top: 20px;
   margin: 10px;
   border-radius: 15px;
 }
-.bttn{
-min-width: 100px;
-padding: 10px;
-border-radius: 25px;
-opacity: 0.8;
-margin: 5px;
-font-weight: bolder;
+.card-body {
+  padding: 20px;
 }
-.closebttn{
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.card-text {
+  font-size: 1rem;
+}
+.bttn {
+  min-width: 100px;
+  padding: 10px;
+  border-radius: 25px;
+  opacity: 0.8;
+  margin: 5px;
+  font-weight: bolder;
+}
+.bttn:hover {
+  border: 1px solid black;
+}
+.closebttn {
   right: 0;
 }
-.cardbitch{
-border: 5px solid rgb(90, 3, 152);
-box-shadow: none;
-background-color: rgba(229, 209, 249, 0.9);
-border-radius: 15px;
+.cardbitch {
+  border: 5px solid rgb(90, 3, 152);
+  box-shadow: none;
+  background-color: rgba(229, 209, 249, 0.9);
+  border-radius: 15px;
 }
-.cardbitch:hover{
-box-shadow: 0 0 5px 3px white;
+.cardbitch:hover {
+  box-shadow: 0 0 5px 3px white;
+}
+
+.card-img-top {
+  width: 160px;
+  border-radius: 15px;
+}
+.image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px; /* Adjust this height as necessary */
+  overflow: hidden;
+  background-color: var(--intro-bg);
+}
+.image-container img {
+  width: 60%;
+}
+
+.card {
+  margin: 15px;
+  width: 380px;
+  border-radius: 25px;
+  transition: all 0.5s ease-in-out;
+}
+.card:hover {
+  transform: translateY(-15px); /* Move the card slightly upwards */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
 }

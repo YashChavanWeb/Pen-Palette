@@ -12,7 +12,6 @@ function LandingPage() {
     const vantaRef = useRef(null);
     const navigate = useNavigate();
     const [fadeIn, setFadeIn] = useState(false);
-    const [showAnimation, setShowAnimation] = useState(false);
 
     useEffect(() => {
         // Vanta.js effect setup
@@ -48,16 +47,13 @@ function LandingPage() {
     }, []);
 
     const handleGetStarted = () => {
-        setShowAnimation(true);
-        setTimeout(() => {
-            if (auth.currentUser) {
-                // Redirect to dashboard if user is logged in
-                navigate('/dashboard');
-            } else {
-                // Redirect to login if user is not logged in
-                navigate('/login');
-            }
-        }, 2000); // Adjust the time according to your animation duration
+        if (auth.currentUser) {
+            // Redirect to dashboard if user is logged in
+            navigate('/dashboard');
+        } else {
+            // Redirect to login if user is not logged in
+            navigate('/login');
+        }
     };
 
     return (
@@ -67,13 +63,13 @@ function LandingPage() {
                 <div className={`block ${fadeIn ? 'fade-in-block' : ''}`}>
                     <img src={book} alt="Book" className="book" />
                     <div>
-                        <h1 className="title">Welcome to Our Website!</h1>
+                        <h1 className="titlel">Welcome to Our Website!</h1>
                         <p className="subtitle">Please log in or sign up to access our services.</p>
                     </div>
                 </div>
                 <div className={`button-container ${fadeIn ? 'fade-in-button' : ''}`}>
-                    <button className={`buttonlp ${showAnimation ? 'button-animation' : ''}`} onClick={handleGetStarted}>
-                        {showAnimation ? 'Redirecting...' : 'Get Started'}
+                    <button className="buttonlp" onClick={handleGetStarted}>
+                        Get Started
                     </button>
                 </div>
             </div>
