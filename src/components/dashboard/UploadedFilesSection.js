@@ -4,10 +4,14 @@ import { db } from "../../firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "../../styles/dashboard.css"; // Import the dashboard CSS file
+import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import "../../styles/card.css";
 
 export default function UploadedFilesSection({ currentUser }) {
+
+    const navigate = useNavigate();
+
     const [loading, setLoading] = useState(false);
     const [fileData, setFileData] = useState([]);
     const [toastVisible, setToastVisible] = useState(false);
@@ -105,11 +109,15 @@ export default function UploadedFilesSection({ currentUser }) {
             setSelectedFile(file);
             setShowFileModal(true);
             fetchComments(fileId);
+
+            // Navigate to the dynamic route with the book ID
+            navigate(`/book/${fileId}`);
         } catch (error) {
             console.error(error);
             showToast("Failed to open file");
         }
     };
+
 
     const fetchComments = async (fileId) => {
         try {

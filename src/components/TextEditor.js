@@ -31,8 +31,6 @@ function TextEditor() {
         pdf.setFontSize(12);
 
         try {
-            const coverPageURL = location.state?.coverPageURL;
-
             if (!coverPageURL) {
                 throw new Error("Cover page URL is missing or invalid");
             }
@@ -88,16 +86,21 @@ function TextEditor() {
                 createdBy: currentUser ? currentUser.uid : null,
                 createdAt: new Date().toISOString(),
                 views: 0,
+                chapters: chapters // Ensure chapters are saved
             });
 
             alert("File published successfully!");
 
-            navigate('/dashboard');
+            // Navigate to the book preview page
+            navigate(`/book/${newFileKey}`);
         } catch (error) {
             console.error("Error publishing file:", error);
             alert("An error occurred while publishing the file. Please try again.");
         }
     }
+
+
+
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -225,7 +228,6 @@ function TextEditor() {
                 </div>
             ))}
 
-            {/* Hidden container for PDF generation */}
             <div className="hidden-pdf-container">
                 {chapters.map((chapter, index) => (
                     <div key={index} id={`pdf-chapter-${index}`} className="pdf-chapter">
@@ -258,7 +260,6 @@ function TextEditor() {
                 </div>
             </div>
 
-            {/* Save button */}
             <div className="button-section">
                 <button className="save-btn" onClick={saveStory}>Save</button>
             </div>
