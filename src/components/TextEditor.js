@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -6,13 +6,16 @@ import JoditEditor from 'jodit-react';
 import { useAuth } from '../contexts/AuthContexts';
 import { db, storage } from '../firebase'; // Import the Firebase database and storage instances
 import '../styles/TextEditor.css';
+import SideDrawer from './SideDrawer';
 
 function TextEditor() {
     const { currentUser } = useAuth();
     const [chapterName, setChapterName] = useState('');
     const [content, setContent] = useState('');
     const [chapters, setChapters] = useState([]);
+    const [activeChapterIndex, setActiveChapterIndex] = useState(null);
     const [editingIndex, setEditingIndex] = useState(null);
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const editorRef = useRef(null);
 
     const location = useLocation();
@@ -21,6 +24,10 @@ function TextEditor() {
     const uploadedFileTitle = location.state?.fileTitle;
     const uploadedFileDescription = location.state?.fileDescription;
     const coverPageURL = location.state?.coverPageURL;
+
+    const toggleDrawer = () => {
+        setIsDrawerOpen(!isDrawerOpen);
+    };
 
     const goBack = () => {
         navigate('/dashboard');
@@ -98,9 +105,6 @@ function TextEditor() {
             alert("An error occurred while publishing the file. Please try again.");
         }
     }
-
-
-
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
@@ -196,9 +200,24 @@ function TextEditor() {
         height: 600
     };
 
+    // Effect to scroll to active chapter
+    useEffect(() => {
+        if (activeChapterIndex !== null && editorRef.current) {
+            const chapterElement = document.getElementById(`chapter-${activeChapterIndex}`);
+            if (chapterElement) {
+                chapterElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }, [activeChapterIndex]);
+
     return (
         <div className="text-editor-container">
             <div className="button-section">
+                <div>
+                    <button onClick={toggleDrawer}>Toggle Drawer</button>
+                    <SideDrawer isOpen={isDrawerOpen} toggle={toggleDrawer} chapters={chapters} setActiveChapterIndex={setActiveChapterIndex} />
+                    {/* Other content of your app */}
+                </div>
                 <button className="go-back-button" onClick={goBack}>Go Back</button>
                 <button className="add-btn" onClick={addChapter}>{editingIndex !== null ? 'Update' : 'Add'}</button>
                 <button className="publish-button" onClick={downloadPdf}>Publish</button>
@@ -221,7 +240,7 @@ function TextEditor() {
             </div>
 
             {chapters.map((chapter, index) => (
-                <div key={index} id={`chapter-${index}`} className="section editor-section">
+                <div key={index} id={`chapter-${index}`} className={`section editor-section ${index === activeChapterIndex ? 'active-chapter' : ''}`}>
                     <h2>{chapter.name}</h2>
                     <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
                     <button className="edit-btn" onClick={() => editChapter(index)}>Edit</button>
