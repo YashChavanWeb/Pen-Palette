@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Profile from "./profile";
 import FileUpload from "./FileUpload";
-import "../../styles/profiledrawer.css";
+import "../../styles/dashboard/profiledrawer.css";
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ProfileDrawer = ({ isOpen, onClose, currentUser, fileData, setLoading }) => {

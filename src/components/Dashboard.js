@@ -6,7 +6,7 @@ import { db, storage } from "../firebase";
 // import Profile from "./dashboard/profile";
 // import FileUpload from "./dashboard/FileUpload";
 import UploadedFilesSection from "./dashboard/UploadedFilesSection";
-import "../styles/dashboard.css";
+import "../styles/dashboard/dashboard.css";
 import ProfileDrawer from "./dashboard/profileDrawer";
 import "../styles/modal.css";
 import "../styles/card.css";

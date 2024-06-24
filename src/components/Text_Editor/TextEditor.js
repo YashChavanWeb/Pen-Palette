@@ -3,9 +3,9 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import JoditEditor from 'jodit-react';
-import { useAuth } from '../contexts/AuthContexts';
-import { db, storage } from '../firebase'; // Import the Firebase database and storage instances
-import '../styles/TextEditor.css';
+import { useAuth } from '../../contexts/AuthContexts';
+import { db, storage } from '../../firebase'; // Import the Firebase database and storage instances
+import '../../styles/Text_Editor/TextEditor.css';
 import SideDrawer from './SideDrawer';
 
 function TextEditor() {
@@ -247,14 +247,14 @@ function TextEditor() {
                 </div>
             ))}
 
-            <div className="hidden-pdf-container">
+            {/*<div className="hidden-pdf-container">
                 {chapters.map((chapter, index) => (
                     <div key={index} id={`pdf-chapter-${index}`} className="pdf-chapter">
                         <h2>{chapter.name}</h2>
                         <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
                     </div>
                 ))}
-            </div>
+            </div>*/}
 
             <div className="section editor-section">
                 <input

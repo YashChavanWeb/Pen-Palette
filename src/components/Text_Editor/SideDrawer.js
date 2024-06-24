@@ -1,7 +1,7 @@
 // SideDrawer.js
 
 import React from 'react';
-import '../styles/SideDrawer.css'
+import '../../styles/Text_Editor/SideDrawer.css'
 
 const SideDrawer = ({ isOpen, toggle, chapters, setActiveChapterIndex }) => {
     return (

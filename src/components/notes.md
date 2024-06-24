@@ -78,3 +78,35 @@ follow
   card.css
   dashboard.css
   TextEditor.js
+
+Date: 22/06/2024
+
+1.1. folder arrange
+login
+signup
+forgot
+landing
+update profile
+
+text editor
+book preview
+side drawer
+
+css:
+landing
+login
+signup
+forgot
+
+card
+dashboard
+profile drawer
+
+texteditor
+sidedrawer
+
+1.2 Add - add on screen and toggle
+Draft - save in firebase and toggle
+
+2.  dashboard - read function
+3.  text editor favicon

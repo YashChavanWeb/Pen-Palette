@@ -3,7 +3,7 @@ import { Button, Spinner, Modal, Form } from "react-bootstrap";
 import { db } from "../../firebase";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import "../../styles/dashboard.css"; // Import the dashboard CSS file
+import "../../styles/dashboard/dashboard.css"; // Import the dashboard CSS file
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import "../../styles/card.css";
