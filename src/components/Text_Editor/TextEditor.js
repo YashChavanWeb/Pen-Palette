@@ -84,7 +84,8 @@ function TextEditor() {
             const coverPageDownloadURL = await coverPageRef.getDownloadURL();
 
             const newFileKey = db.ref().child("files").push().key;
-            await db.ref(`files/${newFileKey}`).set({
+            const newFileRef = db.ref(`files/${newFileKey}`);
+            await newFileRef.set({
                 title: uploadedFileTitle,
                 description: uploadedFileDescription,
                 coverPageURL: coverPageDownloadURL, // Use the downloaded cover page URL
@@ -92,9 +93,11 @@ function TextEditor() {
                 uploaderEmail: currentUser ? currentUser.email : 'abc@gmail.com',
                 createdBy: currentUser ? currentUser.uid : null,
                 createdAt: new Date().toISOString(),
-                views: 0,
-                chapters: chapters // Ensure chapters are saved
+                views: 0
             });
+
+            // Save chapters to the new file's chapters node
+            await newFileRef.child('chapters').set(chapters);
 
             alert("File published successfully!");
 
@@ -105,6 +108,7 @@ function TextEditor() {
             alert("An error occurred while publishing the file. Please try again.");
         }
     }
+
 
     const handleImageUpload = (event) => {
         const file = event.target.files[0];
