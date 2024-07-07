@@ -11,6 +11,7 @@ import TextEditor from "./Text_Editor/TextEditor";
 import BookPreview from "./Text_Editor/BookPreview";
 import Signup from "./Authentication/Signup";
 
+
 function App() {
   return (
     <Router>

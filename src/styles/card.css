@@ -6,7 +6,7 @@
 
 :root {
   --card-width: 325px;
-  --card-height: 650px;
+  --card-height: 400px;
   --card-radius: 25px;
   --separator-height: 500px;
 
@@ -34,7 +34,7 @@
   .actions {
     position: fixed;
     width: 100%;
-    padding: 50px;
+    padding: 20px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
@@ -52,7 +52,7 @@
     border-top-right-radius: var(--card-radius);
     background-color: var(--intro-bg);
     transform-style: preserve-3d;
-    transform-origin: 50% 40%;
+    transform-origin: 50% 20%;
     transition: var(--transition);
     z-index: 4;
   }
@@ -61,7 +61,7 @@
   .card-img-top {
     width: 170px;
     position: absolute;
-    top: 180px;
+    top: 50px;
     left: 250px;
     z-index: 5;
     transform: translateZ(28.5px);
@@ -71,7 +71,7 @@
     position: absolute;
     width: 172px;
     height: 29px;
-    top: 430px;
+    top: 300px;
     left: 248px;
     transform: translateY(-15px) translateX(0px) translateZ(16px)
       rotateX(104deg);
