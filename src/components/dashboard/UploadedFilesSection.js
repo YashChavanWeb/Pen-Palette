@@ -377,7 +377,7 @@ export default function UploadedFilesSection({ currentUser }) {
                         <div className="card flex bg-white shadow h-100">
                             <div className="image-container">
                                 <img
-                                    src={file.coverPageURL}
+                                    src={file.coverPageURL} // Ensure coverPageURL is used here
                                     className="card-img-top"
                                     alt={file.title}
                                     style={{ objectFit: "cover", height: "200px" }}
@@ -425,6 +425,7 @@ export default function UploadedFilesSection({ currentUser }) {
                         </div>
                     </motion.div>
                 ))}
+
             </div>
 
 
