@@ -127,11 +127,14 @@ export default function Dashboard() {
     return `${day}/${month}/${year} - ${hours}:${minutes} ${ampm}`;
   };
 
-  const filteredFiles = fileData.filter(
-    (file) =>
-      file.createdBy !== (currentUser && currentUser.uid) &&
-      file.title.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredFiles = fileData.filter((file) => {
+    // Ensure file and file.title are defined and are strings
+    const fileTitle = file.title ? file.title.toLowerCase() : '';
+    const createdBy = file.createdBy === (currentUser && currentUser.uid);
+
+    // Perform filtering
+    return !createdBy && fileTitle.includes(searchQuery.toLowerCase());
+  });
 
   const handleDownload = (fileURL) => {
     const anchor = document.createElement("a");
