@@ -14,6 +14,10 @@ import booktop from '../images/booktop.png';
 import bookside from '../images/bookside.png';
 import logo from '../images/logo.png';
 import logomeow from '../images/logomeow.png';
+import { Modal, Button } from 'react-bootstrap';
+
+
+
 
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
@@ -388,7 +392,7 @@ export default function Dashboard() {
 
 
 
-        {/* <Modal show={showFileModal} onHide={() => setShowFileModal(false)}>
+        <Modal show={showFileModal} onHide={() => setShowFileModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>File Details</Modal.Title>
             <Button variant="secondary" onClick={toggleSave}>
@@ -439,7 +443,7 @@ export default function Dashboard() {
               Open
             </Button>
           </Modal.Footer>
-        </Modal> */}
+        </Modal>
       </div>
     </div>
   );
