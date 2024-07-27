@@ -5,7 +5,7 @@ import jsPDF from 'jspdf';
 import { motion } from 'framer-motion';
 import JoditEditor from 'jodit-react';
 import { useAuth } from '../../contexts/AuthContexts';
-import { db } from '../../firebase'; // Adjust this import according to your setup
+import { storage, db } from '../../firebase';
 import '../../styles/Text_Editor/TextEditor.css';
 import SideDrawer from './SideDrawer';
 
@@ -86,6 +86,21 @@ function TextEditor() {
         pdf.setFontSize(12);
 
         try {
+            // Upload cover image to Firebase Storage if it's not already uploaded
+            if (!bookDetails.coverPageURL.startsWith('https://firebasestorage.googleapis.com')) {
+                const storageRef = storage.ref();
+                const imagesRef = storageRef.child(`cover_images/${bookDetails.title}-cover`);
+
+                // Convert cover image URL to blob
+                const response = await fetch(bookDetails.coverPageURL);
+                const blob = await response.blob();
+
+                // Upload blob to Firebase Storage
+                const snapshot = await imagesRef.put(blob);
+                bookDetails.coverPageURL = await snapshot.ref.getDownloadURL();
+            }
+
+            // Generate PDF with chapters
             const pdfPromises = chapters.map((chapter, index) => {
                 return new Promise((resolve, reject) => {
                     const chapterElement = document.getElementById(`pdf-chapter-${index}`);
@@ -115,7 +130,7 @@ function TextEditor() {
                 await db.ref(`files/${fileId}`).remove();
             }
 
-            // Create new book
+            // Create new book with updated coverPageURL
             const newFileRef = db.ref('files').push();
             const newFileId = newFileRef.key; // Generate a new file ID
 
@@ -139,15 +154,25 @@ function TextEditor() {
         }
     };
 
-    const handleImageUpload = (event) => {
+
+    const handleImageUpload = async (event) => {
         const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            const imgBase64 = e.target.result;
-            setContent((prevContent) => `${prevContent}<img src="${imgBase64}" alt="Uploaded Image" class="uploaded-image" />`);
-        };
-        reader.readAsDataURL(file);
+        const storageRef = storage.ref();
+        const imagesRef = storageRef.child(`images/${file.name}`);
+
+        try {
+            // Upload file to Firebase Storage
+            const snapshot = await imagesRef.put(file);
+            const imageUrl = await snapshot.ref.getDownloadURL();
+
+            // Update content with the image URL
+            setContent((prevContent) => `${prevContent}<img src="${imageUrl}" alt="Uploaded Image" class="uploaded-image" />`);
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Failed to upload image. Please try again.");
+        }
     };
+
 
     const handleTextFileUpload = (event) => {
         const file = event.target.files[0];

@@ -13,6 +13,7 @@ import "../styles/card.css";
 import booktop from '../images/booktop.png';
 import bookside from '../images/bookside.png';
 import logo from '../images/logo.png';
+import logomeow from '../images/logomeow.png';
 
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
@@ -127,14 +128,11 @@ export default function Dashboard() {
     return `${day}/${month}/${year} - ${hours}:${minutes} ${ampm}`;
   };
 
-  const filteredFiles = fileData.filter((file) => {
-    // Ensure file and file.title are defined and are strings
-    const fileTitle = file.title ? file.title.toLowerCase() : '';
-    const createdBy = file.createdBy === (currentUser && currentUser.uid);
-
-    // Perform filtering
-    return !createdBy && fileTitle.includes(searchQuery.toLowerCase());
-  });
+  const filteredFiles = fileData.filter(
+    (file) =>
+      file.createdBy !== (currentUser && currentUser.uid) &&
+      file.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const handleDownload = (fileURL) => {
     const anchor = document.createElement("a");
@@ -232,12 +230,13 @@ export default function Dashboard() {
 
   return (
     <div>
-      <header>
+      <header className="blur-lg">
         <div className="profile-icon" onClick={toggleProfileDrawer}>
-          <ion-icon name="person-circle" size="large" id="profile-icon"></ion-icon>
+          {/* <ion-icon name="person-circle" size="large" id="profile-icon"></ion-icon> */}
+          <img src={logomeow} alt="Meow" id="profile-icon"></img>
           <img src={logo} alt="Pen Palette" className="logod"></img>
         </div>
-        <div className="header-buttons">
+        <div className="header-buttons my-auto">
           {/* Button to go to the uploaded files section */}
           <div className="book-button" onClick={() => document.querySelector(".center-section").scrollIntoView({ behavior: 'smooth' })}>
             <button>View Your Books</button>
@@ -256,19 +255,19 @@ export default function Dashboard() {
         <div className="dashboard-container">
 
           <div className="right-section">
-            <h2 className="text-center mb-4" style={{ color: "white" }}>Explore more Stories</h2>
-            <div className="row">
-              <input
-                type="text"
-                placeholder="Search by title..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="form-control mb-3 "
-                id="searchbar"
-              />
-
+            <div className="searchname">
+              <h2 className="text-center mb-4" style={{ color: "white" }}>Explore more Stories</h2>
+              <div className="row">
+                <input
+                  type="text"
+                  placeholder="Search by title..."
+                  value={searchQuery}
+                  onChange={handleSearchChange}
+                  className="form-control mb-3 "
+                  id="searchbar"
+                />
+              </div>
             </div>
-
             <div className="row">
               {filteredFiles.map((file) => (
                 <div key={file.id} className="mb-4" style={{ width: "25%" }}>
