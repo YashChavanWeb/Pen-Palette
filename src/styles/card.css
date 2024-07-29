@@ -6,35 +6,35 @@
 
 :root {
   --card-width: 325px;
-  --card-height: 400px;
+  --card-height: 525px;
   --card-radius: 25px;
-  --separator-height: 500px;
-
+  --separator-height: 400px;
+  
   --bg: #fdf3f2;
   --card-bg: #f3ddc3;
   --intro-bg: #d4affa;
   --font-color: #807b7b;
   --red: #e67272;
   --blue: #7472e6;
-
+  
   --transition: transform 0.7s ease-in-out;
 }
 
 .layout {
   width: var(--card-width);
   height: var(--card-height);
-  margin: 30px 0;
+  margin: 20px 0;
   border-radius: var(--card-radius);
-  perspective: 500px;
+  perspective: 450px;
   overflow: hidden;
   color: var(--font-color);
   background-color: var(--card-bg);
   box-shadow: 20px 20px 20px 7px #580391d1;
 
-  .actions {
+  .actions { 
     position: fixed;
     width: 100%;
-    padding: 20px;
+    padding: 45px;
     display: flex;
     flex-direction: row-reverse;
     justify-content: space-between;
@@ -42,7 +42,7 @@
     color: white;
     z-index: 6;
   }
-
+  
   .book-cover {
     position: relative;
     height: var(--separator-height);
@@ -52,16 +52,15 @@
     border-top-right-radius: var(--card-radius);
     background-color: var(--intro-bg);
     transform-style: preserve-3d;
-    transform-origin: 50% 20%;
+    transform-origin: 50% 40%;
     transition: var(--transition);
     z-index: 4;
   }
-
-  .book-top,
-  .card-img-top {
+  
+  .book-top, .card-img-top {
     width: 170px;
     position: absolute;
-    top: 50px;
+    top: 110px;
     left: 250px;
     z-index: 5;
     transform: translateZ(28.5px);
@@ -71,16 +70,15 @@
     position: absolute;
     width: 172px;
     height: 29px;
-    top: 300px;
+    top: 430px; 
     left: 248px;
-    transform: translateY(-15px) translateX(0px) translateZ(16px)
-      rotateX(104deg);
+    transform: translateY(-80px) translateX(0px) translateZ(16px) rotateX(104deg);
   }
 
   .preface {
     height: var(--separator-height);
     padding: 10px;
-    transition: var(--transition);
+    transition: var(--transition); 
     background: white;
 
     .header {
@@ -98,13 +96,13 @@
     }
 
     .author {
-      font-family: sans-serif;
+      font-family:sans-serif;
       font-style: italic;
       color: black;
     }
 
     .body {
-      font-family: "Quicksand", sans-serif;
+      font-family: 'Quicksand', sans-serif;
     }
 
     .body p:first-child {
@@ -118,14 +116,14 @@
 }
 
 .layout:hover .book-cover + .preface {
-  transform: translateY(-302px);
+  transform: translateY(-240px);
 }
 
 .layout:hover .book-cover + .preface .icon {
   transform: rotateX(180deg);
 }
 
-.card-body {
+.card-body{
   padding-top: 20px;
   margin: 10px;
   border-radius: 15px;
@@ -140,28 +138,28 @@
 .card-text {
   font-size: 1rem;
 }
-.bttn {
-  min-width: 100px;
-  padding: 10px;
-  border-radius: 25px;
-  opacity: 0.8;
-  margin: 5px;
-  font-weight: bolder;
+.bttn{
+min-width: 100px;
+padding: 10px;
+border-radius: 25px;
+opacity: 0.8;
+margin: 5px;
+font-weight: bolder;
 }
-.bttn:hover {
+.bttn:hover{
   border: 1px solid black;
 }
-.closebttn {
+.closebttn{
   right: 0;
 }
-.cardbitch {
-  border: 5px solid rgb(90, 3, 152);
-  box-shadow: none;
-  background-color: rgba(229, 209, 249, 0.9);
-  border-radius: 15px;
+.cardbitch{
+border: 5px solid rgb(90, 3, 152);
+box-shadow: none;
+background-color: rgba(229, 209, 249, 0.9);
+border-radius: 15px;
 }
-.cardbitch:hover {
-  box-shadow: 0 0 5px 3px white;
+.cardbitch:hover{
+box-shadow: 0 0 5px 3px white;
 }
 
 .card-img-top {

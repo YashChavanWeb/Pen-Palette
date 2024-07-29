@@ -8,16 +8,13 @@ import { db, storage } from "../firebase";
 import UploadedFilesSection from "./dashboard/UploadedFilesSection";
 import "../styles/dashboard/dashboard.css";
 import ProfileDrawer from "./dashboard/profileDrawer";
+import { ToastContainer, toast } from "react-toastify";
 import "../styles/modal.css";
 import "../styles/card.css";
 import booktop from '../images/booktop.png';
 import bookside from '../images/bookside.png';
 import logo from '../images/logo.png';
 import logomeow from '../images/logomeow.png';
-import { Modal, Button } from 'react-bootstrap';
-
-
-
 
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
@@ -29,13 +26,29 @@ export default function Dashboard() {
   const [commentError, setCommentError] = useState("");
   const [showComments, setShowComments] = useState(false);
   const [fileComments, setFileComments] = useState([]);
+  const [toastVisible, setToastVisible] = useState(false);
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false);
   const { currentUser, logout } = useAuth();
-  const history = useNavigate();
+  const navigate = useNavigate();
 
   const toggleProfileDrawer = () => {
     setProfileDrawerOpen(!profileDrawerOpen); // Toggle the state
   };
+  
+
+
+  const openFileOverlay = async (fileId) => {
+    const file = fileData.find(file => file.id === fileId);
+    setSelectedFile(file);
+    setShowFileModal(true);
+    // Increment views count when the file is opened
+    if (file) {
+      handleFileClick(file.id, file.views || 0);
+    }
+  };
+
+
+
 
   useEffect(() => {
     const fetchFiles = () => {
@@ -77,6 +90,16 @@ export default function Dashboard() {
     }
   }, [selectedFile]);
 
+
+  const showToast = (message) => {
+    try {
+      toast.success(message, { autoClose: 1500, onClose: () => setToastVisible(false) });
+      setToastVisible(true);
+    } catch (error) {
+      console.error("Error displaying toast:", error);
+    }
+  };
+
   const handleDelete = async (fileId) => {
     try {
       setLoading(true);
@@ -91,19 +114,47 @@ export default function Dashboard() {
   const handleLogout = async () => {
     try {
       await logout();
-      history.push("/login");
+      navigate.push("/login");
     } catch {
       console.error("Failed to log out");
     }
   };
 
-  const openFile = async (fileId) => {
-    const file = fileData.find(file => file.id === fileId);
-    setSelectedFile(file);
-    setShowFileModal(true);
-    // Increment views count when the file is opened
-    if (file) {
-      handleFileClick(file.id, file.views || 0);
+
+  const fetchComments = async (fileId) => {
+    try {
+      const snapshot = await db.ref(`files/${fileId}/comments`).once("value");
+      const comments = [];
+      snapshot.forEach((childSnapshot) => {
+        comments.push({
+          id: childSnapshot.key,
+          ...childSnapshot.val()
+        });
+      });
+      setFileComments(comments);
+    } catch (error) {
+      console.error(error);
+      showToast("Failed to fetch comments");
+    }
+  };
+
+  const openFile = async (fileId, fileURL, createdBy) => {
+    try {
+      if (createdBy !== currentUser.uid) {
+        await db.ref(`files/${fileId}/views`).transaction((currentViews) => {
+          return (currentViews || 0) + 1;
+        });
+      }
+      const file = fileData.find((file) => file.id === fileId);
+      setSelectedFile(file);
+      setShowFileModal(true);
+      fetchComments(fileId);
+
+      // Navigate to the dynamic route with the book ID
+      navigate(`/book/${fileId}`);
+    } catch (error) {
+      console.error(error);
+      showToast("Failed to open file");
     }
   };
 
@@ -275,7 +326,7 @@ export default function Dashboard() {
             <div className="row">
               {filteredFiles.map((file) => (
                 <div key={file.id} className="mb-4" style={{ width: "25%" }}>
-                  <div className="layout" onClick={() => openFile(file.id)}>
+                  <div className="layout" onClick={() => openFileOverlay(file.id)}>
                     <div className="actions">
                       <ion-icon name="bookmark"></ion-icon>
                     </div>
@@ -378,7 +429,7 @@ export default function Dashboard() {
                 </div>
                 <div className="modal-footer">
 
-                  <button className="modalbtn" onClick={() => handleOpen(selectedFile.coverPageURL)}>
+                  <button className="modalbtn" onClick={() => openFile(selectedFile.id, selectedFile.fileURL, selectedFile.createdBy)}>
                     Read
                   </button>
                   <button className="modalbtn" onClick={toggleSave}>
@@ -392,7 +443,7 @@ export default function Dashboard() {
 
 
 
-        <Modal show={showFileModal} onHide={() => setShowFileModal(false)}>
+        {/* <Modal show={showFileModal} onHide={() => setShowFileModal(false)}>
           <Modal.Header closeButton>
             <Modal.Title>File Details</Modal.Title>
             <Button variant="secondary" onClick={toggleSave}>
@@ -443,7 +494,7 @@ export default function Dashboard() {
               Open
             </Button>
           </Modal.Footer>
-        </Modal>
+        </Modal> */}
       </div>
     </div>
   );

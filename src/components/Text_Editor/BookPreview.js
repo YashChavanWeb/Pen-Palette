@@ -2,6 +2,9 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
 import SideDrawer from './SideDrawer'; // Assuming you have a SideDrawer component similar to the one in TextEditor
+import "../../styles/Text_Editor/BookPreview.css";
+import { motion } from 'framer-motion';
+import logomeow from "../../images/logomeow.png";
 
 function BookPreview() {
     const { id } = useParams();
@@ -10,6 +13,7 @@ function BookPreview() {
     const [activeChapterIndex, setActiveChapterIndex] = useState(null);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const contentRef = useRef(null);
+    const [mode, setMode] = useState('light');
 
     useEffect(() => {
         const fetchBookData = async () => {
@@ -37,63 +41,63 @@ function BookPreview() {
     };
 
     if (!bookData) {
-        return (
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <p className="text-lg text-gray-700">Loading...</p>
-            </div>
-        );
+        return <div>Loading...</div>;
     }
 
+    const toggleMode = () => {
+        setMode(mode === 'light' ? 'dark' : 'light');
+    };
+
+    const transition = { duration: 0.5 };
+    // const isPublishDisabled = !chapters.length || !bookDetails.title;
+
     return (
-        <div className="flex flex-col h-screen">
-            <div className="flex items-center justify-between p-4 bg-gray-800 text-white shadow-md">
-                <button
-                    onClick={() => navigate('/dashboard')}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded transition duration-200"
-                >
-                    Back to Dashboard
+        <motion.div
+            className={`text-editor-container ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`}
+            initial={{ opacity: 1 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={transition}
+            style={{ transition: 'background-color 0.5s ease, color 0.5s ease' }}
+        >
+            <div className="button-section">
+                <button className="Chplist" onClick={toggleDrawer}><ion-icon name="list" size="large"></ion-icon></button>
+                <img src={logomeow} alt="Meow" id="logoMeow"></img>
+                <button className={`themebtn ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`} onClick={toggleMode}>
+                    <div className='circle'><ion-icon name="bulb-outline" size="large"></ion-icon></div>
                 </button>
-                <button
-                    onClick={toggleDrawer}
-                    className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded transition duration-200"
-                >
-                    Toggle Drawer
-                </button>
+                <SideDrawer isOpen={isDrawerOpen} toggle={toggleDrawer} chapters={bookData.chapters} navigateToChapter={navigateToChapter} />
             </div>
-            <div className="flex flex-1 overflow-hidden">
-                <div className="flex-1 overflow-y-auto p-6 bg-white border-l border-gray-200" ref={contentRef}>
-                    <h1 className="text-3xl font-bold mb-4">{bookData.title}</h1>
-                    {bookData.coverPageURL && (
-                        <img
-                            src={bookData.coverPageURL}
-                            alt="Cover Page"
-                            className="w-48 h-72 object-cover mb-4"
-                        />
-                    )}
-                    <p className="text-gray-700 mb-6">{bookData.description}</p>
+
+            <div className="book-preview">
+
+                <div className="content-section" ref={contentRef}>
+                    <section className='title-section' style={{ backgroundImage: `url(${bookData.coverPageURL})` }}>
+                        {bookData.coverPageURL && (
+                            <div className='cover-page'>
+                                <img src={bookData.coverPageURL} alt="Cover Page" />
+                            </div>
+                        )}
+                        <div className='title-details'>
+                            <h1>{bookData.title}</h1>
+                            <p>{bookData.description}</p>
+                        </div>
+                    </section>
                     {bookData.chapters && bookData.chapters.length > 0 ? (
                         bookData.chapters.map((chapter, index) => (
-                            <div
-                                key={index}
-                                id={`chapter-${index}`}
-                                className={`mb-6 ${index === activeChapterIndex ? 'border-l-4 border-blue-600 bg-blue-50' : ''}`}
-                            >
-                                <h2 className="text-2xl font-semibold mb-2">{chapter.name}</h2>
-                                <div className="text-gray-900" dangerouslySetInnerHTML={{ __html: chapter.content }} />
-                            </div>
+                            <section className='chpContent'>
+                                <div key={index} id={`chapter-${index}`} className={index === activeChapterIndex ? 'active-chapter' : ''}>
+                                    <h2>{chapter.name}</h2>
+                                    <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
+                                </div>
+                            </section>
                         ))
                     ) : (
-                        <p className="text-gray-500">No chapters available</p>
+                        <p>No chapters available</p>
                     )}
                 </div>
-                <SideDrawer
-                    isOpen={isDrawerOpen}
-                    toggle={toggleDrawer}
-                    chapters={bookData.chapters}
-                    navigateToChapter={navigateToChapter}
-                />
             </div>
-        </div>
+        </motion.div>
     );
 }
 

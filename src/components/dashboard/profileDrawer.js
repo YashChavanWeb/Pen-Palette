@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Profile from "./profile";
 import FileUpload from "./FileUpload";
 import "../../styles/dashboard/profiledrawer.css";
-import { motion, AnimatePresence } from 'framer-motion';
+// import { motion, AnimatePresence } from 'framer-motion';
 
 const ProfileDrawer = ({ isOpen, onClose, currentUser, fileData, setLoading }) => {
     const [showProfileModal, setShowProfileModal] = useState(false);

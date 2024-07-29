@@ -66,13 +66,13 @@ function LandingPage() {
     };
 
     return (
-
-        <div className={`bg ${fadeIn ? 'fade-in' : ''}`} ref={vantaRef} style={{ height: "100%" }}>
+        
+        <div className={`bg ${fadeIn ? 'fade-in' : ''}`} ref={vantaRef} style={{height:"100%"}}>
             <section className="scrollableContent">
-                <img src={logo} alt="Logo" className={`logo ${fadeIn ? 'fade-in-logo' : ''}`} />
+            <img src={logo} alt="Logo" className={`logo ${fadeIn ? 'fade-in-logo' : ''}`} />
 
-                <section style={{ height: '100vh' }}>
-                    <section>
+                <section style={{height:'100vh'}}>
+                        <section>
                         <div className={`block ${fadeIn ? 'fade-in-block' : ''}`}>
                             <img src={book} alt="Book" className="book" />
                             <section>
@@ -85,31 +85,31 @@ function LandingPage() {
                                 Get Started
                             </button>
                         </div>
-                        <div style={{ color: "white", padding: "10px", width: "50px", border: "2px solid white", borderRadius: "25px", fontSize: "20px" }}>
+                        <div style={{color:"white", padding:"10px", width:"50px", border:"2px solid white",borderRadius:"25px", fontSize:"20px"}}>
                             <ion-icon name="arrow-down-outline"></ion-icon>
                         </div>
                     </section>
                 </section>
-
+                
                 <section className="features">
                     <section>
                         <div className="featureBox text-white m-6 p-4 "
-                            data-aos="zoom-in-left"
-                            data-aos-anchor-placement="center-center"
+                         data-aos="zoom-in-left"
+                         data-aos-anchor-placement="center-center"
                         >
-                            <img src={giggle} alt="Reading" className="ftImg" />
+                            <img src={giggle} alt="Reading" className="ftImg"/>
                             <div>
                                 <h2 className="headline text-6xl">Discover Your Next Favorite Read</h2>
                                 <p>Dive into a vast library of captivating stories from emerging and established authors alike. Whether you're in the mood for a heartwarming romance, a thrilling mystery, or a fantastical journey to distant worlds, you'll find a diverse range of genres and genres tailored to your interests.</p>
                             </div>
                         </div>
-                        <img src={oldie} alt="" style={{ height: "17%", position: "absolute", top: "1000px" }}
+                        <img src={oldie} alt="" style={{height:"17%", position:"absolute", top:"1000px"}}
                             data-aos="fade"
                         ></img>
-                        <img src={planer} alt="" style={{ position: "absolute", right: "20px", height: "4%" }}
-                            data-aos="fade-up-left"
-                            data-aos-easing="ease-out-cubic"
-                            data-aos-duration="2000"
+                        <img src={planer} alt="" style={{position:"absolute", right:"20px", height:"4%"}}
+                         data-aos="fade-up-left"
+                         data-aos-easing="ease-out-cubic"
+                         data-aos-duration="2000"
                         ></img>
                         <div className="featureBox2 text-white m-6 p-4 "
                             data-aos="zoom-in-right"
@@ -119,23 +119,23 @@ function LandingPage() {
                                 <h2 className="headline text-6xl">Unleash Your Inner Author</h2>
                                 <p>Bring your imagination to life with our easy-to-use writing tools. Craft your narrative, build your characters, and publish your stories for the world to read. Whether you’re a seasoned writer or just starting out, <b>PenPalette</b> is your canvas.</p>
                             </div>
-                            <img src={writing} alt="Reading" className="ftImg" />
+                            <img src={writing} alt="Reading" className="ftImg"/>
                         </div>
                         <div className="featureBox text-white m-6 p-4 "
                             data-aos="zoom-in-left"
                             data-aos-anchor-placement="top-center"
                         >
-                            <img src={guyChilling} alt="Reading" className="ftImg" />
+                            <img src={guyChilling} alt="Reading" className="ftImg"/>
                             <div>
                                 <h2 className="headline text-6xl">Read Anywhere, Anytime <p>Even While Waiting for Your Coffee!</p></h2>
                                 <p>Enjoy your favorite stories on the go. You can read from your laptop, tablet, or computer, whether you’re at home or on the move.  Keep the adventure going, no matter where life takes you.</p>
                             </div>
                         </div>
-                        <img src={planel} alt="" style={{ position: "absolute", height: "4%", margin: "10px" }}
-                            data-aos="fade-up-right"
-                            data-aos-easing="ease-out-cubic"
-                            data-aos-duration="2000"
-                            data-aos-mirror="true"
+                        <img src={planel} alt="" style={{position:"absolute", height:"4%", margin:"10px"}}
+                         data-aos="fade-up-right"
+                         data-aos-easing="ease-out-cubic"
+                         data-aos-duration="2000"
+                         data-aos-mirror="true"
                         ></img>
                         <div className="featureBox2 text-white m-6 p-4 "
                             data-aos="zoom-in-right"
@@ -145,16 +145,16 @@ function LandingPage() {
                                 <h2 className="headline text-6xl">Hop into the Story Circle</h2>
                                 <p>Meet fellow readers and writers! Share your ideas, drop comments, and be part of a lively community that cherishes creativity and storytelling.</p>
                             </div>
-                            <img src={reading} alt="Reading" className="ftImg" />
+                            <img src={reading} alt="Reading" className="ftImg"/>
                         </div>
-                        <img src={kids} alt="" style={{ height: "10%", position: "absolute", right: "0", bottom: "350px" }}
+                        <img src={kids} alt="" style={{height:"10%",position:"absolute", right:"0", bottom:"350px"}}
                             data-aos="fade"
                         ></img>
                     </section>
                 </section>
                 <footer className="footer">
-                    <ion-icon name="mail-open-outline"></ion-icon>
-                    <ion-icon name="mail-open-outline"></ion-icon>
+                 <ion-icon name="mail-open-outline"></ion-icon>
+                 <ion-icon name="mail-open-outline"></ion-icon>
                 </footer>
             </section>
         </div>

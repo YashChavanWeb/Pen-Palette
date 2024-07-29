@@ -68,7 +68,8 @@
 .publish-button,
 .add-btn,
 .edit-btn,
-.save-btn, .draft-btn{
+.save-btn,
+.draft-btn {
     background-color: #7f39c5;
     color: white;
     border: none;
@@ -77,6 +78,7 @@
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.2s ease;
     min-width: 200px;
+    height: 50px;
 }
 
 .go-back-button:hover,
@@ -107,12 +109,14 @@
 .editor {
     top: 60px;
     width: 100%;
-    height: 600px; /* Increased height for larger text area */
+    height: 600px;
+    /* Increased height for larger text area */
     border: 1px solid #333;
     border-radius: 5px;
     padding: 10px;
     resize: vertical;
 }
+
 .upload-section {
     display: flex;
     flex-direction: column;
@@ -135,78 +139,100 @@
     background-color: rgb(41, 1, 75);
     z-index: 5;
     padding: 20px;
+    height: fit-content;
 }
-.footer{
-    margin-bottom: 0 ;
+
+.footer {
+    margin-bottom: 0;
 }
-.email-section{
+
+.email-section {
     opacity: 0.8;
     border-radius: 25px;
 }
-.editor-section{
+
+.editor-section {
     background-color: rgba(255, 255, 255, 0.772);
 }
-.hidden-pdf-container{
+
+.hidden-pdf-container {
     /* padding: 80px; */
     /* margin: 10px; */
     width: 65%;
 }
-.dark-mode{
-    background-color: black; 
-    color: #fff;
-    transition: background-color 0.3s ease, color 0.3s ease; 
 
-    .jodit-wysiwyg, .input-field{
-        background-color: #333;
-        color: white;
+.dark-mode {
+    background-color: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    .jodit-wysiwyg,
+    .input-field {
+        background-color: rgb(194, 193, 193);
+        color: black;
+        border: 2px solid rgba(0, 0, 0, 0.568);
     }
-    .jodit-toolbar__box{
+
+    .jodit-toolbar__box {
         background-color: rgb(50, 49, 49);
     }
-    .email-section{
+
+    .email-section {
         color: black;
     }
-    .editor-section{
+
+    .editor-section {
         color: black;
     }
 }
 
 .light-mode {
-    background-color: #fff; 
+    background-color: #fff;
     color: black;
 
-    .jodit-wysiwyg, .input-field, .email-section, .jodit-ui-group, .editor{
+    .jodit-wysiwyg,
+    .input-field,
+    .email-section,
+    .jodit-ui-group,
+    .editor {
         background-color: whitesmoke;
         color: black;
-    } 
+    }
 }
-.jodit-toolbar__box{
+
+.jodit-toolbar__box {
     top: 150px;
     z-index: 1;
     /* position: sticky; */
 }
-.themebtn, .circle{
+
+.themebtn,
+.circle {
     width: 40px;
     height: 40px;
     background-color: white;
     border-radius: 50%;
     transition: all ease-in-out 0.3s;
 }
-.circle{
+
+.circle {
     background-color: rgb(223, 173, 248);
     padding: 3px;
     transition: all ease-in-out 0.3s;
     color: rgb(51, 3, 94);
 }
-.themebtn.dark-mode{
+
+.themebtn.dark-mode {
     overflow: hidden;
-    .circle{
+
+    .circle {
         transform-origin: bottom right;
         translate: -35% -30%;
         color: black;
-        background-color: black;    
+        background-color: black;
     }
 }
-.themebtn:hover{
+
+.themebtn:hover {
     box-shadow: 0 2px 7px 3px white;
 }

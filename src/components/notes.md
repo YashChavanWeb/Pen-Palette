@@ -1,5 +1,4 @@
 # OVERALL INSTALLATIONS
-
 - node
 - tailwindcss
 - firebase
@@ -45,7 +44,6 @@ follow
 - box photo title - other details on sidebar slider
 
 # 12/06/2024 [krisha]
-
 - npm install framer-motion
 - CHANGES IN :
 - all files in /dashboard
@@ -69,7 +67,6 @@ follow
   Texteditor.js
 
 # 13/06/24 [krisha]
-
 - made the modal after writing the new story
 
 - files changed:
@@ -79,34 +76,10 @@ follow
   dashboard.css
   TextEditor.js
 
-Date: 22/06/2024
-
-1.1. folder arrange
-login
-signup
-forgot
-landing
-update profile
-
-text editor
-book preview
-side drawer
-
-css:
-landing
-login
-signup
-forgot
-
-card
-dashboard
-profile drawer
-
-texteditor
-sidedrawer
-
-1.2 Add - add on screen and toggle
-Draft - save in firebase and toggle
-
-2.  dashboard - read function
-3.  text editor favicon
+# 18/7/24 [krisha]
+- arrangement of files
+- changes in dashboard.js
+- dashboard.css
+- TextEditor.js
+- card.css
+- uploadedFilesSection.js
