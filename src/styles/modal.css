@@ -24,43 +24,53 @@
   max-width: 60%;
   max-height: 90%;
   overflow-y: auto;
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
 }
+
 .modal-content::-webkit-scrollbar {
   display: none;
 }
 
-.content{
+.content {
   display: flex;
 }
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   color: white;
 }
+
 .modal-body {
   margin-top: 10px;
   color: white;
 }
-.comment i{
+
+.comment i {
   font-size: 12px;
 }
-#commentarea{
+
+#commentarea {
   width: 90%;
   margin: 20px;
   border-radius: 25px;
 }
-.comm{
+
+.comm {
   display: flex;
   flex-direction: row;
 }
-.commentbtn{
+
+.commentbtn {
   background-color: transparent;
   margin: 0;
 }
-.commentbtn ion-icon{
+
+.commentbtn ion-icon {
   margin: 10px;
   padding: 10px;
   background-color: transparent;
@@ -68,23 +78,28 @@
   border-radius: 25%;
   transition: 0.3s ease-in-out;
 }
-.commentbtn ion-icon:hover{
+
+.commentbtn ion-icon:hover {
   box-shadow: 0 0 10px 1px #b46aff;
 }
-.comflex{
+
+.comflex {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.modal-footer> button {
+
+.modal-footer>button {
   margin: 10px;
 }
-.modal-footer{
+
+.modal-footer {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
-.modalbtn{
+
+.modalbtn {
   padding: 10px 20px;
   margin: 10px;
   border-radius: 25px;
@@ -93,12 +108,14 @@
   transition: 0.3s ease-in-out;
   color: white;
 }
-.modalbtn:hover{
+
+.modalbtn:hover {
   background-color: transparent;
   border: 2px solid #b46aff;
   box-shadow: 0 0 10px 1px #b46aff;
 }
-.close{
+
+.close {
   border: none;
   background-color: transparent;
   color: white;

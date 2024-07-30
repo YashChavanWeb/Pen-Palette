@@ -150,3 +150,121 @@ header {
 .logod {
   width: 50%;
 }
+
+
+/* General Responsive Design */
+@media only screen and (max-width: 1200px) {
+  .container-fluid {
+    padding: 0 10px;
+  }
+}
+
+@media only screen and (max-width: 992px) {
+  .container-fluid {
+    padding: 0 5px;
+  }
+
+  .searchname {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  #searchbar {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .header-buttons {
+    flex-direction: column;
+  }
+
+  .book-button {
+    margin: 5px 0;
+  }
+
+  .logod {
+    width: 100%;
+    text-align: center;
+    margin: 10px 0;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  header {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+  }
+
+  #profile-icon {
+    width: 20%;
+  }
+
+  .profile-icon {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .book-button button {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .form-control {
+    font-size: 16px;
+    padding: 8px;
+  }
+
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .right-section,
+  .center-section {
+    padding: 10px;
+  }
+
+  .searchname {
+    width: 100%;
+  }
+
+  .others-file-card .card-body {
+    width: 100%;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  header {
+    padding: 10px 5px;
+  }
+
+  .button,
+  .form-control {
+    font-size: 14px;
+  }
+
+  .book-button button {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .searchname {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  #searchbar {
+    width: 100%;
+    padding-left: 10px;
+  }
+
+  .profile-icon {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .logod {
+    width: 80%;
+  }
+}

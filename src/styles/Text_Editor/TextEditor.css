@@ -236,3 +236,132 @@
 .themebtn:hover {
     box-shadow: 0 2px 7px 3px white;
 }
+
+
+
+
+/* General Mobile Styles */
+@media (max-width: 768px) {
+    .text-editor-container {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .button-section {
+        flex-direction: column;
+        align-items: stretch;
+        height: auto;
+        padding: 10px;
+        position: static;
+    }
+
+    .go-back-button,
+    .publish-button,
+    .add-btn,
+    .save-btn,
+    .draft-btn {
+        min-width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .section {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+    }
+
+    .title-section {
+        flex-direction: column;
+        align-items: center;
+        background-size: contain;
+        background-position: center;
+    }
+
+    .cover-page img {
+        max-width: 100%;
+        margin-right: 0;
+    }
+
+    .title-description-container {
+        padding: 10px;
+        text-align: center;
+    }
+
+    .input-field {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+
+    .editor {
+        height: 400px;
+    }
+
+    .upload-section {
+        width: 100%;
+    }
+
+    .email-section {
+        text-align: center;
+    }
+
+    .editor-section {
+        padding: 10px;
+    }
+
+    .hidden-pdf-container {
+        width: 100%;
+    }
+
+    .jodit-wysiwyg {
+        height: 300px;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .button-section {
+        padding: 5px;
+    }
+
+    .go-back-button,
+    .publish-button,
+    .add-btn,
+    .save-btn,
+    .draft-btn,
+    .toggle {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .section {
+        padding: 5px;
+    }
+
+    .title-section {
+        margin-top: 10px;
+    }
+
+    .cover-page img {
+        max-width: 100%;
+    }
+
+    .title-description-container {
+        padding: 5px;
+    }
+
+    .editor {
+        height: 300px;
+    }
+
+    .upload-section {
+        margin-top: 5px;
+    }
+
+    .email-section {
+        font-size: 14px;
+    }
+
+    .editor-section {
+        padding: 5px;
+    }
+}
