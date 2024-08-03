@@ -1,10 +1,20 @@
-/* Base styles for profile drawer */
+@keyframes slideDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-10%);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .profile-drawer {
   position: fixed;
   top: 0;
   left: 0;
   width: 500px;
-  /* Adjust the width for larger screens */
   height: 100vh;
   z-index: 999;
   background-color: #470276;
@@ -13,37 +23,31 @@
   padding: 25px;
 }
 
-/* Styles for open drawer */
 .profile-drawer.open {
   transform: translateX(0);
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .profile-drawer {
     width: 100%;
-    /* Full width for smaller screens */
   }
 }
 
 @media (max-width: 480px) {
   .profile-drawer {
     width: 100%;
-    /* Ensure full width for very small screens */
   }
 
-  .modal-container {
+  /* .modal-container {
     margin: 10px;
     padding: 15px;
-  }
+  } */
 
   #btnicon {
     font-size: 18px;
-    /* Smaller icons for small screens */
   }
 }
 
-/* Modal styles */
 .modal-container {
   background-color: #1c0831;
   margin: 15px;
@@ -53,9 +57,9 @@
   border-radius: 20px;
 }
 
-.modal-content {
+/* .modal-content {
   max-width: 100%;
-}
+} */
 
 /* Overlay background */
 .blur-background {

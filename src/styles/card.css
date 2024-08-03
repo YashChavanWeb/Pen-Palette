@@ -356,3 +356,26 @@
     margin: 0;
   }
 }
+
+.file-slide {
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.slick-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .slick-slide {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .slick-slide {
+    font-size: 12px;
+  }
+}

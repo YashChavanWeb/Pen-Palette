@@ -387,7 +387,7 @@ export default function UploadedFilesSection({ currentUser }) {
                                         <p className="card-text"><b>Uploaded at: </b>{formatTime(file.createdAt)}</p>
                                     </div>
                                 </div>
-                                <div className="mt-3 d-flex">
+                                <div className="mt-3 d-flex mx-auto">
                                     <button
                                         className="bttn" style={{ backgroundColor: "skyblue" }}
                                         onClick={() => handleEdit(file)}
@@ -400,6 +400,8 @@ export default function UploadedFilesSection({ currentUser }) {
                                     >
                                         Delete
                                     </button>
+                                </div>
+                                <div className="mt-3 d-flex mx-auto">
                                     <button
                                         className="bttn btn-secondary"
                                         onClick={() => {
