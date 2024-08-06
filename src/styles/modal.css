@@ -126,7 +126,7 @@
   color: white;
 }
 
-@media (max-width: 600px) {
+@media only screen and (max-width: 768px) {
   .modal-content {
     flex-direction: row;
     max-width: 100%;
@@ -144,5 +144,13 @@
 
   .comflex {
     font-size: small;
+    display: flex;
+    flex-direction: column;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  #commentarea {
+    height: 20px;
   }
 }

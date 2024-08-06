@@ -381,13 +381,13 @@ export default function UploadedFilesSection({ currentUser }) {
                             </div>
                             <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{file.title}</h5>
-                                <div className="mt-auto d-flex justify-content-between">
+                                <div className=" mt-auto d-flex justify-content-between">
                                     <div>
                                         <p className="card-text"><b>Uploaded on: </b>{formatDate(file.createdAt)}</p>
                                         <p className="card-text"><b>Uploaded at: </b>{formatTime(file.createdAt)}</p>
                                     </div>
                                 </div>
-                                <div className="mt-3 d-flex mx-auto">
+                                <div className="buttons-container mt-3 d-flex mx-auto">
                                     <button
                                         className="bttn" style={{ backgroundColor: "skyblue" }}
                                         onClick={() => handleEdit(file)}
@@ -400,8 +400,6 @@ export default function UploadedFilesSection({ currentUser }) {
                                     >
                                         Delete
                                     </button>
-                                </div>
-                                <div className="mt-3 d-flex mx-auto">
                                     <button
                                         className="bttn btn-secondary"
                                         onClick={() => {
@@ -419,6 +417,9 @@ export default function UploadedFilesSection({ currentUser }) {
                                     >
                                         Add
                                     </button>
+                                </div>
+                                <div className="mt-3 d-flex mx-auto">
+                                  
                                 </div>
                             </div>
                         </div>

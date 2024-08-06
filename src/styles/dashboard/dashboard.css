@@ -54,6 +54,16 @@ body::-webkit-scrollbar {
   padding: 20px;
 }
 
+.row.upperCard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.row.upperCard .cardWidth {
+  width: 25%;
+}
+
 .form-control {
   border-radius: 25px;
   background-color: #b46aff;
@@ -264,6 +274,98 @@ header {
   .others-file-card .card-body {
     width: 100%;
   }
+
+
+  .row.upperCard {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 1rem;
+    gap: 1rem;
+    box-sizing: border-box;
+  }
+
+  .card {
+    flex: 0 0 auto;
+    width: 200px;
+    box-sizing: border-box;
+    margin-right: 1rem;
+  }
+
+  .book-cover img {
+    display: block;
+  }
+
+  .row.upperCard .cardWidth {
+    width: auto;
+  }
+
+
+
+
+  @media only screen and (max-width: 768px) {
+    header {
+      height: 15vh;
+      padding: 10px;
+    }
+
+    #profile-icon {
+      width: 20%;
+    }
+
+    .book-button button {
+      width: 100%;
+      padding: 10px;
+      font-size: 14px;
+    }
+
+    .form-control {
+      font-size: 16px;
+      padding: 8px;
+    }
+
+    .dashboard-container {
+      flex-direction: column;
+    }
+
+    .right-section,
+    .center-section {
+      padding: 10px;
+    }
+
+    .searchname {
+      width: 100%;
+    }
+
+    .others-file-card .card-body {
+      width: 100%;
+    }
+
+
+    .row.upperCard {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      padding: 1rem;
+      gap: 1rem;
+      box-sizing: border-box;
+    }
+
+    .card {
+      flex: 0 0 auto;
+      width: 200px;
+      box-sizing: border-box;
+      margin-right: 1rem;
+    }
+
+    .book-cover img {
+      display: block;
+    }
+
+    .row.upperCard .cardWidth {
+      width: auto;
+    }
+  }
 }
 
 @media only screen and (max-width: 600px) {
@@ -311,8 +413,102 @@ header {
     font-size: larger;
     margin: 10px;
   }
+
+  .row.upperCard {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 1rem;
+    gap: 1rem;
+    box-sizing: border-box;
+  }
+
+  .card {
+    flex: 0 0 auto;
+    width: 200px;
+    box-sizing: border-box;
+    margin-right: 1rem;
+  }
+
+  .book-cover img {
+    display: block;
+  }
+
+  .row.upperCard .cardWidth {
+    width: auto;
+  }
+
 }
 
+@media only screen and (max-width: 1200px) {
 
+  header {
+    padding: 10px 5px;
+  }
 
-@media (max-width: 599px) {}
+  .button,
+  .form-control {
+    font-size: 14px;
+  }
+
+  .book-button button {
+    font-size: 12px;
+    padding: 8px;
+  }
+
+  .searchname {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  #searchbar {
+    width: 100%;
+    padding-left: 10px;
+  }
+
+  .profile-icon {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .logod {
+    width: 80%;
+  }
+
+  .header-buttons {
+    display: none;
+  }
+
+  .menu-button {
+    display: block;
+    background-color: transparent;
+    color: white;
+    font-size: larger;
+    margin: 10px;
+  }
+
+  .row.upperCard {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding: 1rem;
+    gap: 1rem;
+    box-sizing: border-box;
+  }
+
+  .card {
+    flex: 0 0 auto;
+    width: 200px;
+    box-sizing: border-box;
+    margin-right: 1rem;
+  }
+
+  .book-cover img {
+    display: block;
+  }
+
+  .row.upperCard .cardWidth {
+    width: auto;
+  }
+
+}

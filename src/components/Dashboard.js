@@ -47,9 +47,9 @@ export default function Dashboard() {
     setSelectedFile(file);
     setShowFileModal(true);
     // Increment views count when the file is opened
-    if (file) {
-      handleFileClick(file.id, file.views || 0);
-    }
+    // if (file) {
+    //   handleFileClick(file.id, file.views || 0);
+    // }
   };
 
 
@@ -339,9 +339,9 @@ export default function Dashboard() {
                 />
               </div>
             </div>
-            <div className="row">
+            <div className="row upperCard">
               {filteredFiles.map((file) => (
-                <div key={file.id} className="mb-4" style={{ width: "25%" }}>
+                <div key={file.id} className="mb-4 cardWidth">
                   <div className="layout" onClick={() => openFileOverlay(file.id)}>
                     <div className="actions">
                       <ion-icon name="bookmark"></ion-icon>

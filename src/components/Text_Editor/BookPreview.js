@@ -51,6 +51,10 @@ function BookPreview() {
         setMode(mode === 'light' ? 'dark' : 'light');
     };
 
+    const goBack = () => {
+        navigate('/dashboard');
+    };
+
     const transition = { duration: 0.5 };
 
     const chapters = bookData.chapters || [];
@@ -71,10 +75,15 @@ function BookPreview() {
                 chapters={chapters}
                 navigateToChapter={navigateToChapter}
             />
-            <div className="button-section">
-                <button className="Chplist" onClick={toggleDrawer}>
-                    <ion-icon name="list" size="large"></ion-icon>
-                </button>
+            <div className="button-section bookPreview">
+                <div className='imp-buttons'>
+                    <button className="goback" onClick={goBack}>
+                        <ion-icon name="arrow-back" size="large"></ion-icon>
+                    </button>
+                    <button className="Chplist" onClick={toggleDrawer}>
+                        <ion-icon name="list" size="large"></ion-icon>
+                    </button>
+                </div>
                 <img src={logomeow} alt="Meow" id="logoMeow" />
                 <button className={`themebtn ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`} onClick={toggleMode}>
                     <div className='circle'>
