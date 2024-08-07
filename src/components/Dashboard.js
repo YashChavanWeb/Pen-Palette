@@ -283,10 +283,60 @@ export default function Dashboard() {
   // Add state for saving file
   const [isSaved, setIsSaved] = useState(false);
 
-  // Function to toggle save state
-  const toggleSave = () => {
-    setIsSaved(!isSaved);
+
+  const handleSave = async (fileId) => {
+
+    try {
+      const userRef = db.ref(`users/${currentUser.uid}/savedFiles`);
+      const snapshot = await userRef.child(fileId).once("value");
+
+      if (snapshot.exists()) {
+        // File is already saved, so unsave it
+        await userRef.child(fileId).remove();
+        setIsSaved(false);
+        showToast("Removed from saved books");
+      } else {
+        // File is not saved, so save it
+        await userRef.child(fileId).set(true);
+        setIsSaved(true);
+        showToast("Saved to your books");
+        setIsSaved(!isSaved);
+      }
+    } catch (error) {
+      console.error("Error saving file:", error);
+    }
   };
+
+
+  useEffect(() => {
+    if (currentUser) {
+      const fetchSavedFiles = async () => {
+        try {
+          const savedFilesSnapshot = await db.ref(`users/${currentUser.uid}/savedFiles`).once("value");
+          const savedFilesData = savedFilesSnapshot.val() || {};
+          const savedFileIds = Object.keys(savedFilesData);
+
+          const filesSnapshot = await db.ref("files").once("value");
+          const allFilesData = filesSnapshot.val() || {};
+          const savedFiles = Object.entries(allFilesData).filter(([key]) => savedFileIds.includes(key));
+
+          setSavedFiles(savedFiles.map(([key, value]) => ({
+            id: key,
+            ...value,
+          })));
+        } catch (error) {
+          console.error("Error fetching saved files:", error);
+        }
+      };
+
+      fetchSavedFiles();
+    }
+  }, [currentUser]);
+
+  const handleSavedBooksClick = () => {
+    navigate('/saved-books'); // Navigate to the "Saved Books" route
+  };
+
 
   return (
     <div>
@@ -298,12 +348,15 @@ export default function Dashboard() {
         </div>
         <div className="header-buttons my-auto">
           {/* Button to go to the uploaded files section */}
+          <div className="book-button" onClick={handleSavedBooksClick} >
+            <button>Saved Books</button>
+          </div>
           <div className="book-button" onClick={() => document.querySelector(".center-section").scrollIntoView({ behavior: 'smooth' })}>
-            <button>View Your Books</button>
+            <button>My Books</button>
           </div>
           {/* Button to go to the section of exploring more stories */}
           <div className="book-button" onClick={() => document.querySelector(".container-fluid").scrollIntoView({ behavior: 'smooth' })}>
-            <button>Explore More Stories</button>
+            <button>Explore Stories</button>
           </div>
         </div>
         <button className="menu-button" onClick={toggleMenu}>
@@ -312,11 +365,14 @@ export default function Dashboard() {
 
       </header>
       <div className={`header-buttons-mobile ${menuOpen ? 'open' : ''}`}>
+        <div className="book-button" onClick={handleSavedBooksClick} >
+          <button>Saved Books</button>
+        </div>
         <div className="book-button" onClick={() => document.querySelector(".center-section").scrollIntoView({ behavior: 'smooth' })}>
-          <button>View Your Books</button>
+          <button>View My Books</button>
         </div>
         <div className="book-button" onClick={() => document.querySelector(".container-fluid").scrollIntoView({ behavior: 'smooth' })}>
-          <button>Explore More Stories</button>
+          <button>Explore Stories</button>
         </div>
       </div>
 
@@ -448,7 +504,7 @@ export default function Dashboard() {
                   <button className="modalbtn" onClick={() => openFile(selectedFile.id, selectedFile.fileURL, selectedFile.createdBy)}>
                     Read
                   </button>
-                  <button className="modalbtn" onClick={toggleSave}>
+                  <button className="modalbtn" onClick={() => handleSave(selectedFile.id)}>
                     {isSaved ? "Unsave" : "Save"}
                   </button>
                 </div>
