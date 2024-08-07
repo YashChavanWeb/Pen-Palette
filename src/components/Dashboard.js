@@ -302,7 +302,7 @@ export default function Dashboard() {
             <button>View Your Books</button>
           </div>
           {/* Button to go to the section of exploring more stories */}
-          <div className="book-button" onClick={() => document.querySelector(".right-section").scrollIntoView({ behavior: 'smooth' })}>
+          <div className="book-button" onClick={() => document.querySelector(".container-fluid").scrollIntoView({ behavior: 'smooth' })}>
             <button>Explore More Stories</button>
           </div>
         </div>
@@ -315,7 +315,7 @@ export default function Dashboard() {
         <div className="book-button" onClick={() => document.querySelector(".center-section").scrollIntoView({ behavior: 'smooth' })}>
           <button>View Your Books</button>
         </div>
-        <div className="book-button" onClick={() => document.querySelector(".right-section").scrollIntoView({ behavior: 'smooth' })}>
+        <div className="book-button" onClick={() => document.querySelector(".container-fluid").scrollIntoView({ behavior: 'smooth' })}>
           <button>Explore More Stories</button>
         </div>
       </div>

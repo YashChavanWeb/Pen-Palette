@@ -362,7 +362,7 @@ export default function UploadedFilesSection({ currentUser }) {
                     </motion.p>
                 )}
             </AnimatePresence>
-            <div className="row">
+            <div className="row card-real">
                 {filteredFiles.map((file) => (
                     <motion.div
                         key={file.id}
@@ -419,7 +419,7 @@ export default function UploadedFilesSection({ currentUser }) {
                                     </button>
                                 </div>
                                 <div className="mt-3 d-flex mx-auto">
-                                  
+
                                 </div>
                             </div>
                         </div>
@@ -583,8 +583,7 @@ export default function UploadedFilesSection({ currentUser }) {
                             <div className="modal-footer">
                                 {selectedFile && (
                                     <button
-                                        className="bttn"
-                                        style={{ backgroundColor: "skyblue" }}
+                                        className="modalbtn"
                                         onClick={() => openFile(selectedFile.id, selectedFile.fileURL, selectedFile.createdBy)}
                                     >
                                         Read

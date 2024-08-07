@@ -2,6 +2,11 @@ body::-webkit-scrollbar {
   display: none;
 }
 
+
+.card {
+  height: 100px;
+}
+
 @keyframes slideDown {
   0% {
     opacity: 0;
@@ -52,12 +57,16 @@ body::-webkit-scrollbar {
 .center-section {
   /* margin-top: 70px; */
   padding: 20px;
+  margin: -10px;
+  margin-left: -12px;
+  margin-right: 0px;
 }
 
 .row.upperCard {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  margin-left: 10px;
 }
 
 .row.upperCard .cardWidth {
