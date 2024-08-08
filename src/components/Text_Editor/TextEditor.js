@@ -20,6 +20,9 @@ function TextEditor() {
     const editorRef = useRef(null);
     const [mode, setMode] = useState('light');
     const [menuOpen, setMenuOpen] = useState(false);
+    const [tags, setTags] = useState([]);
+    const [newTag, setNewTag] = useState('');
+
 
     const [bookDetails, setBookDetails] = useState({
         title: '',
@@ -291,6 +294,14 @@ function TextEditor() {
         toggleDrawer();
     };
 
+    const addTag = (tag) => {
+        if (tag.trim() && !tags.includes(tag.trim())) {
+            setTags([...tags, tag.trim()]);
+            setNewTag('');
+        }
+    };
+
+
 
     const publish = async () => {
         try {
@@ -331,7 +342,8 @@ function TextEditor() {
                 createdBy: currentUser ? currentUser.uid : null,
                 createdAt: new Date().toISOString(),
                 views: 0,
-                chapters: chapters
+                chapters: chapters,
+                tags: tags  // Add tags here
             });
 
             alert("Book published successfully!");
@@ -391,6 +403,8 @@ function TextEditor() {
                 style={{ transition: 'background-color 0.5s ease, color 0.5s ease' }}
             >
 
+
+
                 <div className="section title-section" style={{ backgroundImage: `url(${bookDetails.coverPageURL})` }}>
                     {bookDetails.coverPageURL && (
                         <div className="cover-page">
@@ -423,6 +437,25 @@ function TextEditor() {
                         </div>
                     ))}
                 </div>
+
+                <div className="section tags-section">
+                    <input
+                        type="text"
+                        value={newTag}
+                        placeholder="Enter a tag"
+                        onChange={(e) => setNewTag(e.target.value)}
+                        className="input-field"
+                    />
+                    <button className="add-tag-btn" onClick={() => addTag(newTag)}>
+                        Add Tag
+                    </button>
+                    <div className="tags-list">
+                        {tags.map((tag, index) => (
+                            <span key={index} className="tag-item">{tag}</span>
+                        ))}
+                    </div>
+                </div>
+
 
                 <div className="section editor-section">
                     <input

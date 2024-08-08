@@ -30,6 +30,8 @@ export default function UploadedFilesSection({ currentUser }) {
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
     const [commentError, setCommentError] = useState("");
+    const [suggestions, setSuggestions] = useState([]);
+
 
     useEffect(() => {
         const unsubscribe = db.ref("files").on("value", (snapshot) => {
@@ -55,8 +57,11 @@ export default function UploadedFilesSection({ currentUser }) {
         };
     }, [currentUser]);
 
+
     const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value);
+        const query = e.target.value;
+        setSearchQuery(query);
+        getSuggestions(query);
     };
 
     const filteredFiles = fileData.filter(
@@ -291,6 +296,8 @@ export default function UploadedFilesSection({ currentUser }) {
     const handleOpen = (coverPageURL) => {
         // Handle opening the file here
     };
+
+
 
     function formatDate(dateString) {
         const date = new Date(dateString);

@@ -19,6 +19,9 @@ import logomeow from '../images/logomeow.png';
 export default function Dashboard() {
   const [fileData, setFileData] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState([]);
+
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
   const [showFileModal, setShowFileModal] = useState(false);
@@ -31,6 +34,28 @@ export default function Dashboard() {
   const { currentUser, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+
+  // Debounce the search query
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchQuery(searchQuery);
+    }, 300); // Adjust the debounce delay as needed
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
+
+
+
+
+
+  // Clear the search input
+  const handleClearSearch = () => {
+    setSearchQuery('');
+    setDebouncedSearchQuery('');
+  };
 
   const toggleProfileDrawer = () => {
     setProfileDrawerOpen(!profileDrawerOpen); // Toggle the state
@@ -171,8 +196,28 @@ export default function Dashboard() {
     }
   };
 
+  const handleSuggestionClick = (suggestion) => {
+    setSearchQuery(suggestion);
+    setSuggestions([]);
+  };
+
+
+  // const handleSearchChange = (e) => {
+  //   setSearchQuery(e.target.value);
+  // };
+
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
+    const query = e.target.value;
+    setSearchQuery(query);
+
+    if (query.length > 0) {
+      const filteredSuggestions = fileData
+        .filter(file => file.title.toLowerCase().includes(query.toLowerCase()))
+        .map(file => file.title);
+      setSuggestions(filteredSuggestions);
+    } else {
+      setSuggestions([]);
+    }
   };
 
   const formatDate = (timestamp) => {
@@ -385,14 +430,39 @@ export default function Dashboard() {
             <div className="searchname">
               <h2 className="text-center mb-4" style={{ color: "white" }}>Explore more Stories</h2>
               <div className="row">
-                <input
+                {/* <input
                   type="text"
                   placeholder="Search by title..."
                   value={searchQuery}
                   onChange={handleSearchChange}
                   className="form-control mb-3 "
                   id="searchbar"
-                />
+                /> */}
+                <div className="search-container">
+                  <input
+                    type="text"
+                    placeholder="Search by title..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="form-control mb-3"
+                    id="searchbar"
+                  />
+                  {searchQuery && (
+                    <button onClick={handleClearSearch} className="btn btn-secondary">
+                      Clear
+                    </button>
+                  )}
+                  {suggestions.length > 0 && (
+                    <ul className="suggestions-list">
+                      {suggestions.map((suggestion, index) => (
+                        <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                          {suggestion}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+
               </div>
             </div>
             <div className="row upperCard">
@@ -452,7 +522,6 @@ export default function Dashboard() {
                   <button className="close" onClick={() => setShowFileModal(false)}>
                     <ion-icon name="close-circle" size="large"></ion-icon>
                   </button>
-
                 </div>
                 <div className="modal-body">
                   {selectedFile && (
@@ -463,14 +532,23 @@ export default function Dashboard() {
                         <h3>{selectedFile.title}</h3>
                         <p><i>Uploaded By: {selectedFile.uploaderEmail}</i></p>
                         <p>Description: {selectedFile.description}</p>
+                        <p>
+                          <strong>Tags:</strong> {selectedFile.tags && selectedFile.tags.length > 0 ? (
+                            <span>{selectedFile.tags.join(", ")}</span>
+                          ) : (
+                            <span>No tags available</span>
+                          )}
+                        </p>
                       </div>
                     </div>
                   )}
                   <div>
-                    <p className="comflex"><h4 className="p-2">Comments <ion-icon name="chatbubble-outline"></ion-icon>  :</h4>
+                    <p className="comflex">
+                      <h4 className="p-2">Comments <ion-icon name="chatbubble-outline"></ion-icon> :</h4>
                       <button onClick={handleToggleComments} className="modalbtn">
                         {showComments ? "Hide Comments" : "Show Comments"} <ion-icon name="chatbubbles-outline"></ion-icon>
-                      </button></p>
+                      </button>
+                    </p>
                     {showComments && fileComments.map((comment, index) => (
                       <div className="comment m-2" key={index}>
                         <i><small>By: {comment.userEmail}</small></i>
@@ -500,7 +578,6 @@ export default function Dashboard() {
                   </div>
                 </div>
                 <div className="modal-footer">
-
                   <button className="modalbtn" onClick={() => openFile(selectedFile.id, selectedFile.fileURL, selectedFile.createdBy)}>
                     Read
                   </button>
@@ -512,6 +589,7 @@ export default function Dashboard() {
             </motion.div>
           )}
         </AnimatePresence>
+
       </div>
     </div>
   );

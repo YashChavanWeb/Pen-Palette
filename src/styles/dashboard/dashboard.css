@@ -521,3 +521,42 @@ header {
   }
 
 }
+
+.tags-section {
+  margin: 20px 0;
+}
+
+.input-field {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 200px;
+  margin-right: 10px;
+}
+
+.add-tag-btn {
+  padding: 8px 16px;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.add-tag-btn:hover {
+  background-color: #0056b3;
+}
+
+.tags-list {
+  margin-top: 10px;
+}
+
+.tag-item {
+  display: inline-block;
+  background-color: #f1f1f1;
+  padding: 5px 10px;
+  margin-right: 5px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: #333;
+}
