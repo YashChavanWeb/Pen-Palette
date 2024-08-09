@@ -26,11 +26,38 @@ export default function UploadedFilesSection({ currentUser }) {
     const [editFile, setEditFile] = useState(null);
     const [showFileModal, setShowFileModal] = useState(false);
     const [fileComments, setFileComments] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
     const [showComments, setShowComments] = useState(false);
     const [comment, setComment] = useState("");
     const [commentError, setCommentError] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
+    const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
     const [suggestions, setSuggestions] = useState([]);
+
+
+    const handleSuggestionClick = (suggestion) => {
+        setSearchQuery(suggestion);
+        setSuggestions([]);
+    };
+
+    // Clear the search input
+    const handleClearSearch = () => {
+        setSearchQuery('');
+        setDebouncedSearchQuery('');
+    };
+
+
+    // Debounce the search query
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebouncedSearchQuery(searchQuery);
+        }, 300); // Adjust the debounce delay as needed
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [searchQuery]);
+
+
 
 
     useEffect(() => {
@@ -61,7 +88,15 @@ export default function UploadedFilesSection({ currentUser }) {
     const handleSearchChange = (e) => {
         const query = e.target.value;
         setSearchQuery(query);
-        getSuggestions(query);
+
+        if (query.length > 0) {
+            const filteredSuggestions = fileData
+                .filter(file => file.title.toLowerCase().includes(query.toLowerCase()))
+                .map(file => file.title);
+            setSuggestions(filteredSuggestions);
+        } else {
+            setSuggestions([]);
+        }
     };
 
     const filteredFiles = fileData.filter(
@@ -338,13 +373,38 @@ export default function UploadedFilesSection({ currentUser }) {
             <div className="searchname">
                 <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Books</h2>
                 <div className="row">
-                    <input
+                    {/*} <input
                         type="text"
                         placeholder="Search by title..."
                         value={searchQuery}
                         onChange={handleSearchChange} className="form-control mb-3"
                         id="searchbar"
-                    /></div>
+                    /> */}
+                    <div className="search-container">
+                        <input
+                            type="text"
+                            placeholder="Search by title..."
+                            value={searchQuery}
+                            onChange={handleSearchChange}
+                            className="form-control mb-3"
+                            id="searchbar"
+                        />
+                        {searchQuery && (
+                            <button onClick={handleClearSearch} className="btn btn-secondary">
+                                Clear
+                            </button>
+                        )}
+                        {suggestions.length > 0 && (
+                            <ul className="suggestions-list">
+                                {suggestions.map((suggestion, index) => (
+                                    <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
+                                        {suggestion}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </div>
+                </div>
             </div>
             <AnimatePresence>
                 {loading && (
