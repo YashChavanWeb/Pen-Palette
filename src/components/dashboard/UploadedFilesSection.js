@@ -45,6 +45,32 @@ export default function UploadedFilesSection({ currentUser }) {
         setDebouncedSearchQuery('');
     };
 
+    useEffect(() => {
+        const unsubscribe = db.ref("files").on("value", (snapshot) => {
+            if (snapshot) {
+                const files = [];
+                snapshot.forEach((childSnapshot) => {
+                    const data = childSnapshot.val();
+                    if (data.createdBy === currentUser.uid) {
+                        files.push({
+                            id: childSnapshot.key,
+                            ...data,
+                            views: data.views || 0 // Ensure views property is included
+                        });
+                    }
+                });
+                setFileData(files);
+            } else {
+                setFileData([]);
+            }
+        });
+
+        return () => {
+            unsubscribe();
+        };
+    }, [currentUser]);
+
+
 
     // Debounce the search query
     useEffect(() => {
@@ -448,10 +474,11 @@ export default function UploadedFilesSection({ currentUser }) {
                             </div>
                             <div className="card-body d-flex flex-column">
                                 <h5 className="card-title">{file.title}</h5>
-                                <div className=" mt-auto d-flex justify-content-between">
+                                <div className="mt-auto d-flex justify-content-between">
                                     <div>
                                         <p className="card-text"><b>Uploaded on: </b>{formatDate(file.createdAt)}</p>
                                         <p className="card-text"><b>Uploaded at: </b>{formatTime(file.createdAt)}</p>
+                                        <p className="card-text"><b>Views: </b>{file.views}</p> {/* Display views count */}
                                     </div>
                                 </div>
                                 <div className="buttons-container mt-3 d-flex mx-auto">

@@ -10,7 +10,7 @@ function BookPreview() {
     const { id } = useParams();
     const navigate = useNavigate();
     const [bookData, setBookData] = useState(null);
-    const [activeChapterIndex, setActiveChapterIndex] = useState(null);
+    const [activeChapterIndex, setActiveChapterIndex] = useState(0);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const contentRef = useRef(null);
     const [mode, setMode] = useState('light');
@@ -41,6 +41,14 @@ function BookPreview() {
             }
         }
         toggleDrawer(); // Close the drawer after navigating to the chapter
+    };
+
+    const showPreviousChapter = () => {
+        setActiveChapterIndex(prevIndex => Math.max(prevIndex - 1, 0));
+    };
+
+    const showNextChapter = () => {
+        setActiveChapterIndex(prevIndex => Math.min(prevIndex + 1, (bookData.chapters || []).length - 1));
     };
 
     if (!bookData) {
@@ -106,19 +114,32 @@ function BookPreview() {
                         </div>
                     </section>
                     {chapters.length > 0 ? (
-                        chapters.map((chapter, index) => (
-                            <section
-                                key={index}
-                                id={`chapter-${index}`}
-                                className={`chpContent ${index === activeChapterIndex ? 'active-chapter' : ''}`}
-                            >
-                                <h2>{chapter.name}</h2>
-                                <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
-                            </section>
-                        ))
+                        <section
+                            id={`chapter-${activeChapterIndex}`}
+                            className={`chpContent ${activeChapterIndex === activeChapterIndex ? 'active-chapter' : ''}`}
+                        >
+                            <h2>{chapters[activeChapterIndex].name}</h2>
+                            <div dangerouslySetInnerHTML={{ __html: chapters[activeChapterIndex].content }} />
+                        </section>
                     ) : (
                         <p>No chapters available</p>
                     )}
+                </div>
+                <div className="navigation-buttons">
+                    <button
+                        className="prev-btn"
+                        onClick={showPreviousChapter}
+                        disabled={activeChapterIndex === 0}
+                    >
+                        Previous
+                    </button>
+                    <button
+                        className="next-btn"
+                        onClick={showNextChapter}
+                        disabled={activeChapterIndex === totalChapters - 1}
+                    >
+                        Next
+                    </button>
                 </div>
             </div>
         </motion.div>
