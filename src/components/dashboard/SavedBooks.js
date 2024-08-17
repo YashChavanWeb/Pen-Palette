@@ -2,12 +2,23 @@ import React, { useState, useEffect } from 'react';
 import { db } from '../../firebase';
 import { useAuth } from '../../contexts/AuthContexts';
 import { useNavigate } from 'react-router-dom';
-import "../../styles/dashboard/SavedBooks.css"; // Import the CSS file for styling
+import "../../styles/dashboard/SavedBooks.css";
+import "../../styles/card.css";
+import { toast } from "react-toastify";
+import logomeow from "../../images/logomeow.png";
+import ConfirmationModal from '../ConfirmationModal';
 
 const SavedBooks = () => {
     const [savedFiles, setSavedFiles] = useState([]);
     const { currentUser } = useAuth();
     const navigate = useNavigate();
+    const [toastVisible, setToastVisible] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [fileToUnsave, setFileToUnsave] = useState(null);
+
+    const goBack = () => {
+        navigate('/dashboard');
+    };
 
     useEffect(() => {
         if (currentUser) {
@@ -41,39 +52,111 @@ const SavedBooks = () => {
                     return (currentViews || 0) + 1;
                 });
             }
-            // Navigate to the dynamic route with the book ID
             navigate(`/book/${fileId}`);
         } catch (error) {
             console.error("Failed to open file", error);
-            // Optional: Display a user-friendly message
             alert("Failed to open file");
         }
     };
 
+    const handleSave = async (fileId) => {
+        try {
+            const userRef = db.ref(`users/${currentUser.uid}/savedFiles`);
+            const snapshot = await userRef.child(fileId).once("value");
+
+            if (snapshot.exists()) {
+                setFileToUnsave(fileId); // Set the file ID to unsave
+                setIsModalOpen(true); // confirmation modal
+            } else {
+                await userRef.child(fileId).set(true);
+                setSavedFiles(prev => [...prev, fileId]);
+                showToast("Saved to your books");
+            }
+        } catch (error) {
+            console.error("Error saving file:", error);
+        }
+    };
+
+    const handleUnsave = async () => {
+        try {
+            const userRef = db.ref(`users/${currentUser.uid}/savedFiles`);
+            if (fileToUnsave) {
+                await userRef.child(fileToUnsave).remove();
+                setSavedFiles(prev => prev.filter(file => file.id !== fileToUnsave)); // Update state directly
+                showToast("Removed from saved books");
+                setFileToUnsave(null); // Reset the file ID
+            }
+        } catch (error) {
+            console.error("Error unsaving file:", error);
+        } finally {
+            setIsModalOpen(false); // Close the modal
+        }
+    };
+
+
+    const showToast = (message) => {
+        try {
+            toast.success(message, { autoClose: 1500, onClose: () => setToastVisible(false) });
+            setToastVisible(true);
+        } catch (error) {
+            console.error("Error displaying toast:", error);
+        }
+    };
+
+    const handleCancel = () => {
+        setFileToUnsave(null); // Reset the file ID
+        setIsModalOpen(false); // Close the modal
+    };
+
     return (
         <div className="saved-books-container">
-            <h1 className="saved-books-title">Saved Books</h1>
+            <header className="saved-books-title">
+                <button className="goback" onClick={goBack}>
+                    <ion-icon name="arrow-back" size="large"></ion-icon>
+                </button>
+                <img src={logomeow} alt="Meow"></img>
+                <h1>Saved Books</h1>
+            </header>
             <div className="book-list">
                 {savedFiles.length === 0 ? (
                     <p>No saved books.</p>
                 ) : (
                     savedFiles.map((file) => (
-                        <div key={file.id} className="book-item">
-                            <img src={file.coverPageURL} alt={file.title} className="book-cover" />
+                        <div key={file.id} className="book-item layout">
+                            <img src={file.coverPageURL} alt={file.title} className="bookcover" />
                             <div className="book-details">
-                                <h3>{file.title}</h3>
-                                <p>{file.description}</p>
-                                <button
-                                    className="continue-reading-btn"
-                                    onClick={() => openFile(file.id, file.coverPageURL, file.createdBy)}
-                                >
-                                    Continue Reading
-                                </button>
+                                <h4>{file.title}</h4>
+                                <div className='Savedlistbuttons'>
+                                    <button
+                                        className="reading button"
+                                        onClick={() => openFile(file.id, file.coverPageURL, file.createdBy)}
+                                    >
+                                        Continue Reading
+                                    </button>
+                                    <ion-icon
+                                        name="bookmark"
+                                        size="large"
+                                        className="bookMarkIcon"
+                                        style={{
+                                            color: savedFiles.some(savedFile => savedFile.id === file.id) ? "#580391d1" : "gray",
+                                            cursor: "pointer", margin: "7px"
+                                        }}
+                                        onClick={() => handleSave(file.id)}
+                                    ></ion-icon>
+                                </div>
                             </div>
                         </div>
                     ))
                 )}
             </div>
+
+            {/* Confirmation Modal */}
+            <ConfirmationModal
+                isOpen={isModalOpen}
+                fileTitle={savedFiles.find(file => file.id === fileToUnsave)?.title || ''}
+                onConfirm={handleUnsave}
+                onCancel={handleCancel}
+            />
         </div>
     );
 };

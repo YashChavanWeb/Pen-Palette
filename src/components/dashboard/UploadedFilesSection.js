@@ -397,7 +397,7 @@ export default function UploadedFilesSection({ currentUser }) {
             <br />
             <br />
             <div className="searchname">
-                <h2 className="text-center mb-4" style={{ color: "white" }}>Your Uploaded Books</h2>
+                <h2 className="text-center mb-4" style={{ color: "white" }}>Your Published Books</h2>
                 <div className="row">
                     {/*} <input
                         type="text"
@@ -451,36 +451,34 @@ export default function UploadedFilesSection({ currentUser }) {
                         exit={{ opacity: 0 }}
                         className="text-center"
                     >
-                        No files found.
+                        No Books Published.
                     </motion.p>
                 )}
             </AnimatePresence>
-            <div className="row card-real">
+            <div className="urBooks">
                 {filteredFiles.map((file) => (
                     <motion.div
                         key={file.id}
-                        className="col-lg-4 col-md-6 col-sm-12 mb-4"
+                        className=""
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
                     >
-                        <div className="card flex bg-white shadow">
+                        <div className="cardbitch">
                             <div className="image-container">
                                 <img
                                     src={file.coverPageURL}
-                                    className="card-img-top"
                                     alt={file.title}
                                 />
                             </div>
                             <div className="card-body d-flex flex-column">
-                                <h5 className="card-title">{file.title}</h5>
-                                <div className="mt-auto d-flex justify-content-between">
-                                    <div>
-                                        <p className="card-text"><b>Uploaded on: </b>{formatDate(file.createdAt)}</p>
-                                        <p className="card-text"><b>Uploaded at: </b>{formatTime(file.createdAt)}</p>
-                                        <p className="card-text"><b>Views: </b>{file.views}</p> {/* Display views count */}
-                                    </div>
+                                <h5 className="booktitle">{file.title}</h5>
+                                <div className="bookInfo">
+                                    <p className="card-text"><b>Uploaded on: </b>{formatDate(file.createdAt)}</p>
+                                    <p className="card-text"><b>Uploaded at: </b>{formatTime(file.createdAt)}</p>
+                                    <p className="card-text"><b>Views:  </b>  {file.views}  <ion-icon name="heart" id="viewicon"></ion-icon> </p> {/* Display views count */}
                                 </div>
+
                                 <div className="buttons-container mt-3 d-flex mx-auto">
                                     <button
                                         className="bttn" style={{ backgroundColor: "skyblue" }}
@@ -495,7 +493,8 @@ export default function UploadedFilesSection({ currentUser }) {
                                         Delete
                                     </button>
                                     <button
-                                        className="bttn btn-secondary"
+                                        className="bttn"
+                                        style={{ backgroundColor: "darkgrey" }}
                                         onClick={() => {
                                             setShowFileModal(true);
                                             setSelectedFile(file);
@@ -519,10 +518,7 @@ export default function UploadedFilesSection({ currentUser }) {
                         </div>
                     </motion.div>
                 ))}
-
-
             </div>
-
 
             <AnimatePresence>
                 {showConfirmDelete && (
@@ -553,12 +549,12 @@ export default function UploadedFilesSection({ currentUser }) {
                                 <p>Are you sure you want to delete this file?</p>
                             </div>
                             <div className="modal-footer">
-                                <Button variant="secondary" onClick={() => setShowConfirmDelete(false)}>
+                                <button className="modalbtn" onClick={() => setShowConfirmDelete(false)}>
                                     Cancel
-                                </Button>
-                                <Button variant="danger" onClick={() => handleDelete(fileToDelete.id)}>
+                                </button>
+                                <button className="modalbtn" style={{ backgroundColor: "#e83549" }} onClick={() => handleDelete(fileToDelete.id)}>
                                     Delete
-                                </Button>
+                                </button>
                             </div>
                         </motion.div>
                     </motion.div>
@@ -587,7 +583,7 @@ export default function UploadedFilesSection({ currentUser }) {
                                 <button className="close" onClick={() => setShowEditModal(false)}>
                                     <ion-icon name="close-circle" size="large"></ion-icon>
                                 </button>
-                                <Button variant="primary" onClick={saveEditedFile}>Save Changes</Button> {/* Moved "Save Changes" button here */}
+                                <button className="modalbtn" onClick={saveEditedFile}>Save Changes</button> {/* Moved "Save Changes" button here */}
                             </div>
 
                             <div className="modal-body">
@@ -640,7 +636,7 @@ export default function UploadedFilesSection({ currentUser }) {
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="modal-header">
-                                <h5 className="modal-title">File Details</h5>
+                                <h5 className="modal-title">Book Details</h5>
                                 <button className="close" onClick={() => setShowFileModal(false)}>
                                     <ion-icon name="close-circle" size="large"></ion-icon>
                                 </button>
@@ -648,7 +644,11 @@ export default function UploadedFilesSection({ currentUser }) {
                             <div className="modal-body">
                                 {selectedFile && (
                                     <div className="content">
-                                        <img src={selectedFile.coverPageURL} alt="Cover Page" style={{ width: "30%", margin: "10px" }} />
+                                        <img
+                                            src={selectedFile.coverPageURL}
+                                            alt="Cover Page"
+                                            style={{ width: "30%", margin: "10px" }}
+                                        />
                                         <div>
                                             <h3>{selectedFile.title}</h3>
                                             <p><i>Uploaded By: {selectedFile.uploaderEmail}</i></p>
@@ -658,22 +658,48 @@ export default function UploadedFilesSection({ currentUser }) {
                                 )}
                                 <div>
                                     <p className="comflex">
-                                        <h4 className="p-2">Comments <ion-icon name="chatbubble-outline"></ion-icon>  :</h4>
+                                        <h4 className="p-2">
+                                            Comments <ion-icon name="chatbubble-outline"></ion-icon> :
+                                        </h4>
                                         <button onClick={handleToggleComments} className="modalbtn">
-                                            {showComments ? "Hide Comments" : "Show Comments"} <ion-icon name="chatbubbles-outline"></ion-icon>
+                                            {showComments ? "Hide Comments" : "Show Comments"}{" "}
+                                            <ion-icon name="chatbubbles-outline"></ion-icon>
                                         </button>
                                     </p>
-                                    {showComments && fileComments.map((comment, index) => (
-                                        <div className="comment m-2" key={index}>
-                                            <i><small>By: {comment.userEmail}</small></i>
-                                            <p>{comment.text}</p>
-                                            {comment.userEmail === (currentUser && currentUser.email) && (
-                                                <button className="modalbtn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-                                            )}
-                                        </div>
-                                    ))}
+                                    {showComments &&
+                                        fileComments.map((comment, index) => (
+                                            <div className="comment m-2" key={index}>
+                                                <i><small>By: {comment.userEmail}</small></i>
+                                                <p>{comment.text}</p>
+                                                {comment.userEmail === (currentUser && currentUser.email) && (
+                                                    <button
+                                                        className="modalbtn"
+                                                        onClick={() => handleDeleteComment(comment.id)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
                                 </div>
                             </div>
+
+                            {/* New Section for Tags */}
+                            <div className="modal-tags">
+                                <h5>Tags</h5>
+                                <div className="tags-container">
+                                    {selectedFile && selectedFile.tags && selectedFile.tags.length > 0 ? (
+                                        selectedFile.tags.map((tag, index) => (
+                                            <span key={index} className="tag">
+                                                {tag}
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span style={{ color: "grey" }}>No tags available</span>
+                                    )}
+                                </div>
+                            </div>
+
                             <div className="modal-footer">
                                 {selectedFile && (
                                     <button
@@ -683,14 +709,15 @@ export default function UploadedFilesSection({ currentUser }) {
                                         Read
                                     </button>
                                 )}
-                                <button className="modalbtn" onClick={toggleSave}>
-                                    {selectedFile && selectedFile.isSaved ? "Unsave" : "Save"}
-                                </button>
+                                {/* <button className="modalbtn" onClick={toggleSave}>
+                        {selectedFile && selectedFile.isSaved ? "Unsave" : "Save"}
+                    </button> */}
                             </div>
                         </motion.div>
                     </motion.div>
                 )}
             </AnimatePresence>
+
 
 
             <ToastContainer />

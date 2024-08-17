@@ -21,6 +21,7 @@ export default function Dashboard() {
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
+  const [savedFiles, setSavedFiles] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -330,7 +331,6 @@ export default function Dashboard() {
 
 
   const handleSave = async (fileId) => {
-
     try {
       const userRef = db.ref(`users/${currentUser.uid}/savedFiles`);
       const snapshot = await userRef.child(fileId).once("value");
@@ -338,20 +338,49 @@ export default function Dashboard() {
       if (snapshot.exists()) {
         // File is already saved, so unsave it
         await userRef.child(fileId).remove();
-        setIsSaved(false);
+        setSavedFiles(prev => prev.filter(id => id !== fileId));
         showToast("Removed from saved books");
       } else {
         // File is not saved, so save it
         await userRef.child(fileId).set(true);
-        setIsSaved(true);
+        setSavedFiles(prev => [...prev, fileId]);
         showToast("Saved to your books");
-        setIsSaved(!isSaved);
       }
     } catch (error) {
       console.error("Error saving file:", error);
     }
   };
 
+
+  // useEffect(() => {
+  //   if (currentUser) {
+  //     const fetchSavedFiles = async () => {
+  //       try {
+  //         // Fetch saved files for the current user
+  //         const savedFilesSnapshot = await db.ref(`users/${currentUser.uid}/savedFiles`).once("value");
+  //         const savedFilesData = savedFilesSnapshot.val() || {};
+  //         const savedFileIds = Object.keys(savedFilesData);
+
+  //         // Fetch all files
+  //         const filesSnapshot = await db.ref("files").once("value");
+  //         const allFilesData = filesSnapshot.val() || {};
+
+  //         // Filter files that are saved by the user
+  //         const savedFiles = Object.entries(allFilesData).filter(([key]) => savedFileIds.includes(key));
+
+  //         // Update state with saved files
+  //         setSavedFiles(savedFiles.map(([key, value]) => ({
+  //           id: key,
+  //           ...value,
+  //         })));
+  //       } catch (error) {
+  //         console.error("Error fetching saved files:", error);
+  //       }
+  //     };
+
+  //     fetchSavedFiles();
+  //   }
+  // }, [currentUser]);
 
   useEffect(() => {
     if (currentUser) {
@@ -360,15 +389,7 @@ export default function Dashboard() {
           const savedFilesSnapshot = await db.ref(`users/${currentUser.uid}/savedFiles`).once("value");
           const savedFilesData = savedFilesSnapshot.val() || {};
           const savedFileIds = Object.keys(savedFilesData);
-
-          const filesSnapshot = await db.ref("files").once("value");
-          const allFilesData = filesSnapshot.val() || {};
-          const savedFiles = Object.entries(allFilesData).filter(([key]) => savedFileIds.includes(key));
-
-          setSavedFiles(savedFiles.map(([key, value]) => ({
-            id: key,
-            ...value,
-          })));
+          setSavedFiles(savedFileIds); // Store the IDs of saved files
         } catch (error) {
           console.error("Error fetching saved files:", error);
         }
@@ -377,6 +398,7 @@ export default function Dashboard() {
       fetchSavedFiles();
     }
   }, [currentUser]);
+
 
   const handleSavedBooksClick = () => {
     navigate('/saved-books'); // Navigate to the "Saved Books" route
@@ -444,11 +466,11 @@ export default function Dashboard() {
                     placeholder="Search by title..."
                     value={searchQuery}
                     onChange={handleSearchChange}
-                    className="form-control mb-3"
+                    className="form-control"
                     id="searchbar"
                   />
                   {searchQuery && (
-                    <button onClick={handleClearSearch} className="btn btn-secondary">
+                    <button onClick={handleClearSearch} className="btn-secondary">
                       Clear
                     </button>
                   )}
@@ -463,6 +485,7 @@ export default function Dashboard() {
                   )}
                 </div>
 
+
               </div>
             </div>
             <div className="row upperCard">
@@ -470,7 +493,17 @@ export default function Dashboard() {
                 <div key={file.id} className="mb-4 cardWidth">
                   <div className="layout" onClick={() => openFileOverlay(file.id)}>
                     <div className="actions">
-                      <ion-icon name="bookmark"></ion-icon>
+                      <ion-icon
+                        name="bookmark"
+                        style={{
+                          color: savedFiles.includes(file.id) ? "#580391d1" : "gray",
+                          cursor: "pointer"
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSave(file.id);
+                        }}
+                      ></ion-icon>
                     </div>
                     <div className="book-cover">
                       <img className="book-top" src={booktop} alt="book-top" />
@@ -479,14 +512,13 @@ export default function Dashboard() {
                         alt="Cover Page"
                         className="card-img-top"
                         style={{ height: "250px", cursor: "pointer", borderRadius: "10px" }}
-
                       />
                       <img className="book-side" src={bookside} alt="book-side" />
                     </div>
                     <div className="preface">
                       <div className="title">{file.title}</div>
                       <div className="author">{file.uploaderEmail}</div>
-                      <p>Views : {file.views}</p>
+                      <p>Views: {file.views}</p>
                       <div className="body">
                         <p>{file.description}</p>
                       </div>
@@ -495,6 +527,7 @@ export default function Dashboard() {
                 </div>
               ))}
             </div>
+
           </div>
         </div>
         <div className="center-section">
@@ -518,7 +551,7 @@ export default function Dashboard() {
                 onClick={(e) => e.stopPropagation()}
               >
                 <div className="modal-header">
-                  <h5 className="modal-title">File Details</h5>
+                  <h5 className="modal-title">Book Details</h5>
                   <button className="close" onClick={() => setShowFileModal(false)}>
                     <ion-icon name="close-circle" size="large"></ion-icon>
                   </button>
@@ -532,16 +565,10 @@ export default function Dashboard() {
                         <h3>{selectedFile.title}</h3>
                         <p><i>Uploaded By: {selectedFile.uploaderEmail}</i></p>
                         <p>Description: {selectedFile.description}</p>
-                        <p>
-                          <strong>Tags:</strong> {selectedFile.tags && selectedFile.tags.length > 0 ? (
-                            <span>{selectedFile.tags.join(", ")}</span>
-                          ) : (
-                            <span>No tags available</span>
-                          )}
-                        </p>
                       </div>
                     </div>
                   )}
+
                   <div>
                     <p className="comflex">
                       <h4 className="p-2">Comments <ion-icon name="chatbubble-outline"></ion-icon> :</h4>
@@ -559,6 +586,7 @@ export default function Dashboard() {
                       </div>
                     ))}
                   </div>
+
                   <div className="comm mb-3">
                     <textarea
                       value={comment}
@@ -577,18 +605,40 @@ export default function Dashboard() {
                     </button>
                   </div>
                 </div>
+
+                {/* New Section for Tags */}
+                <div className="modal-tags">
+                  <h5>Tags</h5>
+                  <div className="tags-container">
+                    {selectedFile.tags && selectedFile.tags.length > 0 ? (
+                      selectedFile.tags.map((tag, index) => (
+                        <span key={index} className="tag">
+                          {tag}
+                        </span>
+                      ))
+                    ) : (
+                      <span style={{ color: "grey" }}>No tags available</span>
+                    )}
+                  </div>
+                </div>
+
                 <div className="modal-footer">
                   <button className="modalbtn" onClick={() => openFile(selectedFile.id, selectedFile.fileURL, selectedFile.createdBy)}>
                     Read
                   </button>
-                  <button className="modalbtn" onClick={() => handleSave(selectedFile.id)}>
-                    {isSaved ? "Unsave" : "Save"}
+                  <button
+                    className="modalbtn"
+                    onClick={() => handleSave(selectedFile.id)}
+                  >
+                    {savedFiles.includes(selectedFile.id) ? "Unsave" : "Save"}
                   </button>
                 </div>
+
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
+
 
       </div>
     </div>

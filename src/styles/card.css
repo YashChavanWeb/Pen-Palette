@@ -58,9 +58,6 @@
     z-index: 4;
   }
 
-
-
-
   .book-top,
   .card-img-top {
     width: 170px;
@@ -146,6 +143,13 @@
 
 .card-text {
   font-size: 1rem;
+  padding: 0;
+  gap: 1;
+}
+
+#viewicon {
+  color: black;
+  font-size: larger;
 }
 
 .buttons-container {
@@ -176,14 +180,29 @@
 }
 
 .cardbitch {
+  display: flex;
+  flex-direction: column;
+  /* Stack items vertically */
+  align-items: center;
+  /* Center horizontally */
   border: 5px solid rgb(90, 3, 152);
   box-shadow: none;
-  background-color: rgba(229, 209, 249, 0.9);
+  background-color: white;
   border-radius: 15px;
+  width: 380px;
+  overflow: hidden;
+  transition: all ease-in-out 0.3s;
+  margin: 20px;
 }
 
 .cardbitch:hover {
-  box-shadow: 0 0 5px 3px white;
+  translate: 0 -2%;
+}
+
+.booktitle {
+  padding: 5px;
+  font-weight: bold;
+  font-size: 1.5rem;
 }
 
 .card-img-top {
@@ -195,14 +214,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 400px;
-  /* Adjust this height as necessary */
+  height: 350px;
   overflow: hidden;
   background-color: var(--intro-bg);
 }
 
 .image-container img {
-  width: 100%;
+  width: 60%;
+  padding: 10px;
+  border-radius: 15px;
 }
 
 .card {
@@ -214,16 +234,8 @@
 
 .card:hover {
   transform: translateY(-15px);
-  /* Move the card slightly upwards */
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  /* Add a subtle box shadow */
 }
-
-
-
-
-
-
 
 /* Additional Responsive Styles */
 
@@ -248,10 +260,6 @@
     width: 100%;
   }
 
-  .image-container img {
-    width: 80%;
-  }
-
   .card-body {
     padding: 15px;
   }
@@ -262,15 +270,21 @@
   }
 }
 
-@media (max-width: 768px) {
+.urBooks {
+  display: flex;
+  padding: 20px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: 1rem;
+  gap: 1rem;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #888 transparent;
+}
 
+@media (max-width: 768px) {
   .card {
     width: 100%;
-  }
-
-  .card-body {
-    padding: 10px;
-    height: 200px;
   }
 
   .card-title {
@@ -287,37 +301,24 @@
     padding: 8px;
   }
 
-  .image-container {
-    height: 220px;
-
-
-    /* Adjust height for smaller screens */
-  }
-
   .buttons-container {
     display: flex;
     width: 100%;
-    margin-left: -10px;
+    /* margin-left: -10px; */
     height: 80px;
-
-  }
-
-  .image-container img {
-    width: 100%;
   }
 
   .modal-content {
     width: 90%;
     margin: 10px auto;
   }
+
+  .cardbitch {
+    margin: 10px;
+  }
 }
 
 @media (max-width: 576px) {
-  .card-body {
-    /* padding: 5px; */
-    margin: -10px;
-  }
-
   .card-title {
     font-size: 1rem;
   }
@@ -337,33 +338,18 @@
     margin: 5px auto;
   }
 
-  .image-container {
-    height: 300px;
-    /* Adjust height for very small screens */
-  }
-
-  .image-container img {
-    width: 100%;
-  }
-
   .card-img-top {
     width: 100%;
   }
-
-  .card-real {
-    display: flex;
-  }
-
 }
 
-@media (max-width: 350px) {
+@media (max-width: 380px) {
   .searchname h2 {
     font-size: 1.2rem;
   }
 
   .card-body {
-    padding: -10px;
-    margin: -10px;
+    margin: 10px;
   }
 
   .card-title {
@@ -372,6 +358,7 @@
 
   .card-text {
     font-size: 0.7rem;
+    margin-left: 10px;
   }
 
   .bttn {
@@ -380,26 +367,21 @@
     height: 30px;
   }
 
-
-  .image-container img {
-    width: 100%;
-  }
-
   .modal-content {
     width: 100%;
     margin: 0;
   }
-}
 
+  .cardbitch {
+    width: 320px;
+  }
 
-.card-real {
-  width: 99%;
-}
+  .booktitle,
+  .bookInfo {
+    padding-left: 10px;
+  }
 
-
-
-.card-real .card {
-  border: 3px solid white;
-  height: 500px;
-  width: 400px;
+  .buttons-container {
+    padding-left: 10px;
+  }
 }
