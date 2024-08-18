@@ -1,5 +1,3 @@
-// src/components/Profile.js
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContexts';
 import { useNavigate } from 'react-router-dom';
