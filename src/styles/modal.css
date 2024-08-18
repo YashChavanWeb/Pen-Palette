@@ -173,7 +173,7 @@ input[type="text"]:focus {
   top: 100%;
   left: 0;
   width: 100%;
-  background: black;
+  background: rgba(0, 0, 0, 0.5);
   border: 1px solid #ddd;
   border-radius: 4px;
   max-height: 200px;

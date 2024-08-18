@@ -22,6 +22,8 @@ export default function Dashboard() {
   const [debouncedSearchQuery, setDebouncedSearchQuery] = useState('');
   const [suggestions, setSuggestions] = useState([]);
   const [savedFiles, setSavedFiles] = useState([]);
+  const [userInfo, setUserInfo] = useState({});
+
 
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
@@ -35,6 +37,23 @@ export default function Dashboard() {
   const { currentUser, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+
+
+  useEffect(() => {
+    if (currentUser) {
+      const fetchUserInfo = async () => {
+        try {
+          const userSnapshot = await db.ref(`users/${currentUser.uid}`).once("value");
+          const userData = userSnapshot.val();
+          setUserInfo(userData || {});
+        } catch (error) {
+          console.error("Error fetching user info:", error);
+        }
+      };
+
+      fetchUserInfo();
+    }
+  }, [currentUser]);
 
 
   // Debounce the search query
@@ -83,14 +102,18 @@ export default function Dashboard() {
 
   useEffect(() => {
     const fetchFiles = () => {
-      db.ref("files").on("value", (snapshot) => {
+      db.ref("files").on("value", async (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          const fileArray = Object.entries(data).map(([key, value]) => ({
-            id: key,
-            uploaderEmail: value.uploaderEmail,
-            comments: value.comments || [],
-            ...value,
+          const fileArray = await Promise.all(Object.entries(data).map(async ([key, value]) => {
+            const userSnapshot = await db.ref(`users/${value.createdBy}`).once("value");
+            const userData = userSnapshot.val() || {};
+            return {
+              id: key,
+              uploaderUsername: userData.username || "Unknown", // Use username instead of email
+              comments: value.comments || [],
+              ...value,
+            };
           }));
           setFileData(fileArray);
         } else {
@@ -103,6 +126,7 @@ export default function Dashboard() {
 
     return () => db.ref("files").off("value");
   }, []);
+
 
   useEffect(() => {
     if (selectedFile) {
@@ -470,7 +494,7 @@ export default function Dashboard() {
                     id="searchbar"
                   />
                   {searchQuery && (
-                    <button onClick={handleClearSearch} className="btn-secondary">
+                    <button onClick={handleClearSearch} className="modalbtn">
                       Clear
                     </button>
                   )}
@@ -517,7 +541,7 @@ export default function Dashboard() {
                     </div>
                     <div className="preface">
                       <div className="title">{file.title}</div>
-                      <div className="author">{file.uploaderEmail}</div>
+                      <div className="author">{file.uploaderUsername}</div>
                       <p>Views: {file.views}</p>
                       <div className="body">
                         <p>{file.description}</p>
@@ -563,7 +587,7 @@ export default function Dashboard() {
 
                       <div>
                         <h3>{selectedFile.title}</h3>
-                        <p><i>Uploaded By: {selectedFile.uploaderEmail}</i></p>
+                        <p><i>Uploaded By: {selectedFile.uploaderUsername}</i></p>
                         <p>Description: {selectedFile.description}</p>
                       </div>
                     </div>

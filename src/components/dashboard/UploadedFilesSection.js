@@ -7,6 +7,8 @@ import "../../styles/dashboard/dashboard.css"; // Import the dashboard CSS file
 import { useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import "../../styles/card.css";
+import '../../styles/modal.css'
+
 
 export default function UploadedFilesSection({ currentUser }) {
 
@@ -416,7 +418,7 @@ export default function UploadedFilesSection({ currentUser }) {
                             id="searchbar"
                         />
                         {searchQuery && (
-                            <button onClick={handleClearSearch} className="btn btn-secondary">
+                            <button onClick={handleClearSearch} className="modalbtn">
                                 Clear
                             </button>
                         )}
