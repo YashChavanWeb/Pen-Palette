@@ -14,6 +14,7 @@ function BookPreview() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const contentRef = useRef(null);
     const [mode, setMode] = useState('light');
+    const [fontSize, setFontSize] = useState(16); // Default font size
 
     useEffect(() => {
         const fetchBookData = async () => {
@@ -51,6 +52,14 @@ function BookPreview() {
         setActiveChapterIndex(prevIndex => Math.min(prevIndex + 1, (bookData.chapters || []).length - 1));
     };
 
+    const increaseFontSize = () => {
+        setFontSize(prevSize => Math.min(prevSize + 2, 32)); // Max font size limit
+    };
+
+    const decreaseFontSize = () => {
+        setFontSize(prevSize => Math.max(prevSize - 2, 12)); // Min font size limit
+    };
+
     if (!bookData) {
         return <div>Loading...</div>;
     }
@@ -83,25 +92,15 @@ function BookPreview() {
                 chapters={chapters}
                 navigateToChapter={navigateToChapter}
             />
-            <div className="button-section bookPreview">
-                <div className='imp-buttons'>
-                    <button className="goback" onClick={goBack}>
-                        <ion-icon name="arrow-back" size="large"></ion-icon>
-                    </button>
-                    <button className="Chplist" onClick={toggleDrawer}>
-                        <ion-icon name="list" size="large"></ion-icon>
-                    </button>
-                </div>
-                <img src={logomeow} alt="Meow" id="logoMeow" />
-                <button className={`themebtn ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`} onClick={toggleMode}>
-                    <div className='circle'>
-                        <ion-icon name="bulb-outline" size="large"></ion-icon>
-                    </div>
-                </button>
+
+            <div className="font-controls">
+                <button className="font-size-btn" onClick={decreaseFontSize}>A-</button>
+                <span className="font-size-display">{fontSize}px</span>
+                <button className="font-size-btn" onClick={increaseFontSize}>A+</button>
             </div>
 
             <div className="book-preview">
-                <div className="content-section" ref={contentRef}>
+                <div className="content-section" ref={contentRef} style={{ fontSize: `${fontSize}px` }}>
                     <section className='title-section' style={{ backgroundImage: `url(${bookData.coverPageURL})` }}>
                         {bookData.coverPageURL && (
                             <div className='cover-page'>
@@ -125,9 +124,26 @@ function BookPreview() {
                         <p>No chapters available</p>
                     )}
                 </div>
+
+                <div className="button-section bookPreview">
+                    <div className='imp-buttons'>
+                        <button className="goback" onClick={goBack}>
+                            <ion-icon name="arrow-back" size="large"></ion-icon>
+                        </button>
+                        <button className="Chplist" onClick={toggleDrawer}>
+                            <ion-icon name="list" size="large"></ion-icon>
+                        </button>
+                    </div>
+                    <img src={logomeow} alt="Meow" id="logoMeow" />
+                    <button className={`themebtn ${mode === 'dark' ? 'dark-mode' : 'light-mode'}`} onClick={toggleMode}>
+                        <div className='circle'>
+                            <ion-icon name="bulb-outline" size="large"></ion-icon>
+                        </div>
+                    </button>
+                </div>
                 <div className="navigation-buttons">
                     <button
-                        className="prev-btn "
+                        className="prev-btn"
                         onClick={showPreviousChapter}
                         disabled={activeChapterIndex === 0}
                     >

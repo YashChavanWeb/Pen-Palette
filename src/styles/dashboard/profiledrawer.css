@@ -27,27 +27,6 @@
   transform: translateX(0);
 }
 
-@media (max-width: 768px) {
-  .profile-drawer {
-    width: 100%;
-  }
-}
-
-@media (max-width: 480px) {
-  .profile-drawer {
-    width: 100%;
-  }
-
-  /* .modal-container {
-    margin: 10px;
-    padding: 15px;
-  } */
-
-  #btnicon {
-    font-size: 18px;
-  }
-}
-
 .modal-container {
   background-color: #1c0831;
   margin: 15px;
@@ -55,13 +34,9 @@
   color: white;
   animation: slideDown 0.5s ease-in-out;
   border-radius: 20px;
+  overflow: hidden;
 }
 
-/* .modal-content {
-  max-width: 100%;
-} */
-
-/* Overlay background */
 .blur-background {
   position: fixed;
   top: 0;
@@ -73,10 +48,8 @@
   z-index: 999;
 }
 
-/* Button styles */
 .button {
   font-size: 16px;
-  /* Adjust button size for better readability */
 }
 
 .close-button {
@@ -94,7 +67,6 @@
   font-size: 20px;
 }
 
-/* List styles */
 .profile-drawer ul {
   list-style: none;
   padding: 20px;
@@ -102,4 +74,45 @@
 
 .profile-drawer li {
   margin-bottom: 10px;
+}
+
+.card-body.drawer {
+  margin: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.button.logout {
+  width: 100%;
+}
+
+.card-body.fileUpload {
+  margin: 10px;
+}
+
+.form-control.mb-2 {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .profile-drawer {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .profile-drawer {
+    width: 100%;
+    font-size: small;
+  }
+
+  .button.logout {
+    font-size: smaller;
+    width: 50%;
+  }
+
+  #btnicon {
+    font-size: 18px;
+  }
 }

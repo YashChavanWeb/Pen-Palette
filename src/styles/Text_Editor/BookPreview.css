@@ -169,3 +169,48 @@
     }
 
 }
+
+.font-controls {
+    position: fixed;
+    /* Make it sticky */
+    right: 0;
+    /* Align to the right edge */
+    top: 60%;
+    color: white;
+    /* Center vertically */
+    transform: translateY(-50%);
+    /* Center vertically with respect to its height */
+    display: flex;
+    flex-direction: column;
+    /* Stack buttons vertically */
+    background-color: rgba(40, 1, 75, 0.726);
+    /* Slightly transparent background */
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    /* Ensure it stays above other content */
+}
+
+.font-size-btn {
+    background-color: rgb(240, 200, 251);
+    border: none;
+    padding: 10px;
+    margin: 5px 0;
+    /* Space between buttons */
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.font-size-btn:hover {
+    background-color: rgb(58, 39, 86);
+    color: white;
+}
+
+.font-size-display {
+    margin: 5px 0;
+    font-size: 16px;
+    text-align: center;
+}

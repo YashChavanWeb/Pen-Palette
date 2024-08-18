@@ -1,10 +1,11 @@
 // LoadingCatAnimation.js
 import React from 'react';
 import penPaletteLoader from '../images/penPaletteLoader.gif';
+import "../styles/LoadingCatAnimation.css"
 
 function LoadingCatAnimation() {
     return (
-        <div style={{ textAlign: 'center', padding: '100px', backgroundColor: '#7f39c5' }}>
+        <div className='loader'>
             <img src={penPaletteLoader} alt="Loading..." />
         </div>
     );
