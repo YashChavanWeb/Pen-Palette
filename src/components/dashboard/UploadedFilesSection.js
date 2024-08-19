@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { Spinner, Form } from "react-bootstrap";
 import { db } from "../../firebase";
@@ -227,6 +228,7 @@ export default function UploadedFilesSection({ currentUser }) {
         }
     };
 
+
     const handleConfirmDelete = (fileId) => {
         const fileToDelete = fileData.find(file => file.id === fileId);
         setFileToDelete(fileToDelete);
@@ -308,13 +310,15 @@ export default function UploadedFilesSection({ currentUser }) {
     };
 
     const handleCommentChange = (e) => {
-        setComment(e.target.value);
-        if (e.target.value.trim().length === 0) {
+        const value = e.target.value;
+        setComment(value);
+        if (value.trim().length === 0) {
             setCommentError("Comment cannot be empty");
         } else {
             setCommentError("");
         }
     };
+
 
     const handleCommentSubmit = async (fileId) => {
         if (comment.trim().length === 0) {
@@ -331,7 +335,7 @@ export default function UploadedFilesSection({ currentUser }) {
                 createdAt: new Date().toISOString(),
             });
             setComment("");
-            fetchComments(fileId);
+            fetchComments(fileId); // Refresh comments after adding
         } catch (error) {
             console.error(error);
             showToast("Failed to add comment");
@@ -340,11 +344,12 @@ export default function UploadedFilesSection({ currentUser }) {
         }
     };
 
+
     const handleDeleteComment = async (commentId) => {
         try {
             setLoading(true);
             await db.ref(`files/${selectedFile.id}/comments/${commentId}`).remove();
-            fetchComments(selectedFile.id);
+            fetchComments(selectedFile.id); // Refresh comments after deletion
             showToast("Comment deleted successfully!");
         } catch (error) {
             console.error(error);
@@ -662,30 +667,22 @@ export default function UploadedFilesSection({ currentUser }) {
                                 )}
                                 <div>
                                     <p className="comflex">
-                                        <h4 className="p-2">
-                                            Comments <ion-icon name="chatbubble-outline"></ion-icon> :
-                                        </h4>
+                                        <h4 className="p-2">Comments <ion-icon name="chatbubble-outline"></ion-icon> :</h4>
                                         <button onClick={handleToggleComments} className="modalbtn">
-                                            {showComments ? "Hide Comments" : "Show Comments"}{" "}
-                                            <ion-icon name="chatbubbles-outline"></ion-icon>
+                                            {showComments ? "Hide Comments" : "Show Comments"} <ion-icon name="chatbubbles-outline"></ion-icon>
                                         </button>
                                     </p>
-                                    {showComments &&
-                                        fileComments.map((comment, index) => (
-                                            <div className="comment m-2" key={index}>
-                                                <i><small>By: {comment.userEmail}</small></i>
-                                                <p>{comment.text}</p>
-                                                {comment.userEmail === (currentUser && currentUser.email) && (
-                                                    <button
-                                                        className="modalbtn"
-                                                        onClick={() => handleDeleteComment(comment.id)}
-                                                    >
-                                                        Delete
-                                                    </button>
-                                                )}
-                                            </div>
-                                        ))}
+                                    {showComments && fileComments.map((comment, index) => (
+                                        <div className="comment m-2" key={index}>
+                                            <i><small>By: {comment.username}</small></i> {/* Display username instead of email */}
+                                            <p>{comment.text}</p>
+                                            {comment.username === (currentUser && currentUser.username) && (
+                                                <button className="modalbtn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+                                            )}
+                                        </div>
+                                    ))}
                                 </div>
+
                             </div>
 
                             {/* New Section for Tags */}

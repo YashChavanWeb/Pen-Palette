@@ -9,7 +9,6 @@
     height: 100%;
     font-family: "Poppins";
     overflow: hidden;
-    /* background-color: #52297a; */
 }
 
 .block {
@@ -169,14 +168,49 @@
 }
 
 
+.footer {
+    background-color: #1c0831;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
 
+.footer .footer-content {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
 
+.footer .footer-content ion-icon {
+    font-size: 32px;
+    color: white;
+    cursor: pointer;
+}
 
+.footer p {
+    margin-top: 10px;
+    font-size: 14px;
+    opacity: 0.7;
+}
 
+.fade-out {
+    animation: fadeOut 0.5s ease-in-out forwards;
+}
 
-/* Additional Responsive CSS */
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
 
-/* Adjustments for medium-sized screens (768px - 1024px) */
+    100% {
+        opacity: 0;
+        visibility: hidden;
+    }
+}
+
 @media (min-width: 768px) and (max-width: 1024px) {
     .logo {
         width: 40%;
@@ -210,7 +244,14 @@
     }
 }
 
-/* Adjustments for small-sized screens (480px - 767px) */
+@media (min-width: 768px) and (max-width: 900px) {
+
+    .oldie,
+    .kids {
+        display: none;
+    }
+}
+
 @media (max-width: 767px) {
     .logo {
         padding-left: 100px;
@@ -269,7 +310,6 @@
 
 }
 
-/* Adjustments for extra small screens (up to 479px) */
 @media (max-width: 479px) {
     .logo {
         width: 80%;
@@ -281,6 +321,9 @@
 
     .subtitle {
         font-size: 12px;
+        width: 80%;
+        text-align: center;
+        margin: auto;
     }
 
     .buttonlp {
@@ -307,59 +350,13 @@
     }
 }
 
-
-/* landingpage.css */
-
-.footer {
-    background-color: #1c0831;
-    color: white;
-    padding: 20px;
-    text-align: center;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-}
-
-.footer .footer-content {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-}
-
-.footer .footer-content ion-icon {
-    font-size: 32px;
-    color: white;
-    cursor: pointer;
-}
-
-.footer p {
-    margin-top: 10px;
-    font-size: 14px;
-    opacity: 0.7;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-.fade-out {
-    animation: fadeOut 0.5s ease-in-out forwards;
-}
-
-@keyframes fadeOut {
-    0% {
-        opacity: 1;
+@media (max-width: 375px) {
+    .ftImg {
+        width: 100px;
     }
 
-    100% {
-        opacity: 0;
-        visibility: hidden;
+    .featureBox,
+    .featureBox2 {
+        width: 95%;
     }
 }

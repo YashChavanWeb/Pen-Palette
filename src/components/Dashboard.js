@@ -140,7 +140,10 @@ export default function Dashboard() {
         if (commentsData) {
           const commentsArray = Object.entries(commentsData).map(([key, value]) => ({
             id: key,
-            ...value,
+            text: value.text,
+            userEmail: value.userEmail,
+            username: value.username, // Include username here
+            createdAt: value.createdAt,
           }));
           setFileComments(commentsArray);
         } else {
@@ -149,6 +152,7 @@ export default function Dashboard() {
       });
     }
   }, [selectedFile]);
+
 
 
   const showToast = (message) => {
@@ -302,12 +306,14 @@ export default function Dashboard() {
       await db.ref(`files/${fileId}/comments`).push({
         text: comment,
         userEmail: (currentUser && currentUser.email) || "Unknown",
+        username: userInfo.username || "Unknown", // Add this line
         createdAt: new Date().toISOString(),
       });
       setComment("");
     } catch (error) {
       console.error(error);
     } finally {
+      // Add any cleanup or additional logic here if needed
     }
   };
 
@@ -609,14 +615,15 @@ export default function Dashboard() {
                         </p>
                         {showComments && fileComments.map((comment, index) => (
                           <div className="comment m-2" key={index}>
-                            <i><small>By: {comment.userEmail}</small></i>
+                            <i><small>By: {comment.username}</small></i> {/* Display username instead of email */}
                             <p>{comment.text}</p>
-                            {comment.userEmail === (currentUser && currentUser.email) && (
+                            {comment.username === (currentUser && currentUser.username) && (
                               <button className="modalbtn" onClick={() => handleDeleteComment(comment.id)}>Delete</button>
                             )}
                           </div>
                         ))}
                       </div>
+
 
                       <div className="comm mb-3">
                         <textarea

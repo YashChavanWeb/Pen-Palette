@@ -2,7 +2,6 @@ body::-webkit-scrollbar {
   display: none;
 }
 
-
 .card {
   height: 100px;
 }
@@ -253,7 +252,7 @@ header {
   }
 
   #profile-icon {
-    width: 20%;
+    padding: 2px;
   }
 
   .book-button button {
@@ -284,7 +283,6 @@ header {
     width: 100%;
   }
 
-
   .row.upperCard {
     display: flex;
     flex-wrap: nowrap;
@@ -296,7 +294,7 @@ header {
 
   .card {
     flex: 0 0 auto;
-    width: 200px;
+    width: 150px;
     box-sizing: border-box;
     margin-right: 1rem;
   }
@@ -309,71 +307,9 @@ header {
     width: auto;
   }
 
-
-
-
-  @media only screen and (max-width: 768px) {
-    header {
-      height: 15vh;
-      padding: 10px;
-    }
-
-    #profile-icon {
-      width: 20%;
-    }
-
-    .book-button button {
-      width: 100%;
-      padding: 10px;
-      font-size: 14px;
-    }
-
-    .form-control {
-      font-size: 16px;
-      padding: 8px;
-    }
-
-    .dashboard-container {
-      flex-direction: column;
-    }
-
-    .right-section,
-    .center-section {
-      padding: 10px;
-    }
-
-    .searchname {
-      width: 100%;
-    }
-
-    .others-file-card .card-body {
-      width: 100%;
-    }
-
-
-    .row.upperCard {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      padding: 1rem;
-      gap: 1rem;
-      box-sizing: border-box;
-    }
-
-    .card {
-      flex: 0 0 auto;
-      width: 200px;
-      box-sizing: border-box;
-      margin-right: 1rem;
-    }
-
-    .book-cover img {
-      display: block;
-    }
-
-    .row.upperCard .cardWidth {
-      width: auto;
-    }
+  .logod,
+  .logomeow {
+    width: 50%;
   }
 }
 
@@ -427,14 +363,14 @@ header {
     display: flex;
     flex-wrap: nowrap;
     overflow-x: auto;
-    padding: 1rem;
+    padding: 10px;
     gap: 1rem;
     box-sizing: border-box;
   }
 
   .card {
     flex: 0 0 auto;
-    width: 200px;
+    width: 150px;
     box-sizing: border-box;
     margin-right: 1rem;
   }
@@ -480,9 +416,9 @@ header {
     align-items: center;
   }
 
-  .logod {
+  /* .logod {
     width: 80%;
-  }
+  } */
 
   .header-buttons {
     display: none;
