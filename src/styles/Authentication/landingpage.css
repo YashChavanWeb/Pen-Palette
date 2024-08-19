@@ -213,15 +213,16 @@
 /* Adjustments for small-sized screens (480px - 767px) */
 @media (max-width: 767px) {
     .logo {
+        padding-left: 100px;
         width: 60%;
     }
 
     .titlel {
-        font-size: 24px;
+        font-size: 20px;
     }
 
     .subtitle {
-        font-size: 16px;
+        font-size: 14px;
     }
 
     .button-container {
@@ -279,7 +280,7 @@
     }
 
     .subtitle {
-        font-size: 14px;
+        font-size: 12px;
     }
 
     .buttonlp {
@@ -299,6 +300,10 @@
 
     .ftImg {
         width: 120px;
+    }
+
+    .footer {
+        font-size: 10px;
     }
 }
 
