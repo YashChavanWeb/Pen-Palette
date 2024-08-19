@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { db } from '../../firebase';
-import SideDrawer from './SideDrawer'; // Import the SideDrawer component
+import SideDrawer from './SideDrawer';
 import "../../styles/Text_Editor/BookPreview.css";
 import { motion } from 'framer-motion';
 import logomeow from "../../images/logomeow.png";
@@ -14,7 +14,8 @@ function BookPreview() {
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const contentRef = useRef(null);
     const [mode, setMode] = useState('light');
-    const [fontSize, setFontSize] = useState(16); // Default font size
+    const [fontSize, setFontSize] = useState(16); // default font size
+    const [isFontControlsOpen, setIsFontControlsOpen] = useState(false); // font controls
 
     useEffect(() => {
         const fetchBookData = async () => {
@@ -28,6 +29,10 @@ function BookPreview() {
 
     const toggleDrawer = () => {
         setIsDrawerOpen(!isDrawerOpen);
+    };
+
+    const toggleFontControls = () => {
+        setIsFontControlsOpen(!isFontControlsOpen);
     };
 
     const navigateToChapter = (index) => {
@@ -60,10 +65,6 @@ function BookPreview() {
         setFontSize(prevSize => Math.max(prevSize - 2, 12)); // Min font size limit
     };
 
-    if (!bookData) {
-        return <div>Loading...</div>;
-    }
-
     const toggleMode = () => {
         setMode(mode === 'light' ? 'dark' : 'light');
     };
@@ -71,6 +72,10 @@ function BookPreview() {
     const goBack = () => {
         navigate('/dashboard');
     };
+
+    if (!bookData) {
+        return <div>Loading...</div>;
+    }
 
     const transition = { duration: 0.5 };
 
@@ -93,7 +98,16 @@ function BookPreview() {
                 navigateToChapter={navigateToChapter}
             />
 
-            <div className="font-controls">
+            {/* Slider Arrow for Font Controls */}
+            <div
+                className={`slider-arrow ${isFontControlsOpen ? 'open' : ''}`}
+                onClick={toggleFontControls}
+            >
+                <ion-icon name={isFontControlsOpen ? "chevron-forward-outline" : "chevron-back-outline"}></ion-icon>
+            </div>
+
+            {/* Font Controls */}
+            <div className={`font-controls ${isFontControlsOpen ? 'open' : ''}`}>
                 <button className="font-size-btn" onClick={decreaseFontSize}>A-</button>
                 <span className="font-size-display">{fontSize}px</span>
                 <button className="font-size-btn" onClick={increaseFontSize}>A+</button>
