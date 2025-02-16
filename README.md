@@ -1,6 +1,8 @@
+
 # Pen Palette (2024)
 
-Demo: [Pen Palette](https://drive.google.com/file/d/1bVRpiUKDGJxm_FA-YYlfBQoUbuqMfQNv/view)
+Demo: [Pen Palette Demo](https://drive.google.com/file/d/1bVRpiUKDGJxm_FA-YYlfBQoUbuqMfQNv/view)  
+Website: [Live_now](https://penpalette.netlify.app/) (Login required)
 
 **Pen Palette** is an advanced book reading and publishing platform designed to streamline content management, simplify the publication process, and provide powerful tools for authors, publishers, and readers. With built-in chapter management, a comprehensive book writing tool, and dynamic content customization features, Pen Palette is the perfect platform for creating, managing, and sharing books seamlessly.
 
